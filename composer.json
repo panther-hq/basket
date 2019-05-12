@@ -1,0 +1,47 @@
+{
+  "name": "panther-hq/basket",
+  "description": "universal shopping basket",
+  "keywords": [
+    "basket",
+    "cart"
+  ],
+  "type": "library",
+  "homepage": "https://github.com/panther-hq/basket",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Wojciech Śliwka",
+      "email": "wojciech.sliwka90@gmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^7.2"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^0.11.6",
+    "phpstan/phpstan-phpunit": "^0.11.1",
+    "phpstan/phpstan-strict-rules": "^0.11.0",
+    "phpunit/phpunit": "^8.1",
+    "symplify/easy-coding-standard": "^5.4"
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Basket\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Basket\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "check-cs": "vendor/bin/ecs check src tests --config=coding-standard.yml",
+    "fix-cs": "vendor/bin/ecs check src tests --config=coding-standard.yml --fix",
+    "phpstan": "vendor/bin/phpstan analyse src tests --level max --configuration phpstan.neon"
+  }
+}

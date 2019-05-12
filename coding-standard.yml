@@ -1,0 +1,43 @@
+imports:
+  - { resource: 'vendor/symplify/easy-coding-standard/config/psr2.yml' }
+  - { resource: 'vendor/symplify/easy-coding-standard/config/php71.yml' }
+  - { resource: 'vendor/symplify/easy-coding-standard/config/clean-code.yml' }
+  - { resource: 'vendor/symplify/easy-coding-standard/config/common.yml' }
+
+services:
+
+  PhpCsFixer\Fixer\Strict\StrictParamFixer: ~
+  PhpCsFixer\Fixer\PhpTag\BlankLineAfterOpeningTagFixer: ~
+  PhpCsFixer\Fixer\Whitespace\BlankLineBeforeStatementFixer: ~
+  PhpCsFixer\Fixer\CastNotation\CastSpacesFixer: ~
+  PhpCsFixer\Fixer\Operator\ConcatSpaceFixer:
+    spacing: none
+  PhpCsFixer\Fixer\ClassNotation\MethodSeparationFixer: ~
+  PhpCsFixer\Fixer\ClassNotation\NoBlankLinesAfterClassOpeningFixer: ~
+  PhpCsFixer\Fixer\Whitespace\NoSpacesAroundOffsetFixer:
+    positions: ['inside', 'outside']
+  PhpCsFixer\Fixer\Operator\BinaryOperatorSpacesFixer:
+    align_double_arrow: false
+    align_equals: false
+  PhpCsFixer\Fixer\PhpUnit\PhpUnitTestAnnotationFixer: ~
+  PhpCsFixer\Fixer\Phpdoc\PhpdocSeparationFixer: ~
+  PhpCsFixer\Fixer\Phpdoc\PhpdocAlignFixer: ~
+  Symplify\CodingStandard\Fixer\Php\ClassStringToClassConstantFixer: ~
+  Symplify\CodingStandard\Fixer\Property\ArrayPropertyDefaultValueFixer: ~
+  Symplify\CodingStandard\Fixer\ArrayNotation\StandaloneLineInMultilineArrayFixer: ~
+  Symplify\CodingStandard\Sniffs\Debug\DebugFunctionCallSniff: ~
+  Symplify\CodingStandard\Sniffs\Debug\CommentedOutCodeSniff: ~
+
+parameters:
+  exclude_checkers:
+    - PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer
+    - 'PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer'
+    - 'PHP_CodeSniffer\Standards\PEAR\Sniffs\Functions\ValidDefaultValueSniff'
+  skip:
+    SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.UselessDocComment: ~
+    SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.MissingTraversablePropertyTypeHintSpecification: ~
+    SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.MissingTraversableParameterTypeHintSpecification: ~
+    SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.MissingTraversableReturnTypeHintSpecification: ~
+    SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.MissingParameterTypeHint: ~
+    SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.MissingReturnTypeHint: ~
+    SlevomatCodingStandard\Sniffs\Classes\UnusedPrivateElementsSniff.UnusedProperty: ~
