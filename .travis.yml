@@ -6,30 +6,33 @@ matrix:
   include:
     - os: linux
       php: '7.2'
-      env: PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml" DISABLE_XDEBUG="true" STATIC_ANALYSIS="true"
+      env: STATIC_ANALYSIS=true
 
     - os: linux
-      php: '7.3'
+      php: '7.2'
 
 cache:
   directories:
     - $HOME/.composer/cache
-
-before_install:
-  - if [[ $DISABLE_XDEBUG == "true" ]]; then phpenv config-rm xdebug.ini; fi
+before_script:
+  # disable xdebug if not coverage
+  - if [[ $COVERAGE == "" ]]; then phpenv config-rm xdebug.ini; fi
 
 install:
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install --no-interaction --ignore-platform-reqs
 
 script:
-  - vendor/bin/phpunit $PHPUNIT_FLAGS
-  - if [[ $STATIC_ANALYSIS != "" ]]; then composer check-cs; fi
-  - if [[ $STATIC_ANALYSIS != "" ]]; then composer phpstan; fi
+  # static analysis
+  - composer check-cs
+  - composer phpstan
+  # tests
+  - composer phpunit
 
-after_success:
+after_script:
   - |
-    if [[ $PHPUNIT_FLAGS != "" ]]; then
-      wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar
-      php php-coveralls.phar --verbose;
+    if [[ $COVERAGE == true && $TRAVIS_BRANCH == "master" ]]; then
+      vendor/bin/phpunit --coverage-clover coverage.xml
+      wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+      php php-coveralls.phar --verbose
     fi

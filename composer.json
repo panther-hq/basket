@@ -42,6 +42,7 @@
   "scripts": {
     "check-cs": "vendor/bin/ecs check src tests --config=coding-standard.yml",
     "fix-cs": "vendor/bin/ecs check src tests --config=coding-standard.yml --fix",
-    "phpstan": "vendor/bin/phpstan analyse src tests --level max --configuration phpstan.neon"
+    "phpstan": "vendor/bin/phpstan analyse src tests --level max --configuration phpstan.neon",
+    "phpunit": "vendor/bin//phpunit"
   }
 }
