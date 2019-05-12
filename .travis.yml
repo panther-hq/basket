@@ -24,8 +24,11 @@ install:
 
 script:
   # static analysis
-  - composer check-cs
-  - composer phpstan
+  - |
+    if [[ $STATIC_ANALYSIS == true ]]; then
+      composer check-cs
+      composer phpstan
+    fi
   # tests
   - composer phpunit
 
