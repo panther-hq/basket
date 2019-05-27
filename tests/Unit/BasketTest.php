@@ -6,6 +6,8 @@ namespace Basket\Tests\Unit;
 
 use Basket\Item\Item;
 use Basket\Item\TextItemId;
+use Faker\Factory;
+use Faker\Generator;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -123,5 +125,84 @@ final class BasketTest extends TestCase
         $basket->remove($removeItems);
 
         Assert::assertCount(count($basket->findAll()), current($session->get('basket')));
+    }
+
+    public function testAddOwnWarehouse(): void
+    {
+        $faker = Factory::create();
+        $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
+        $warehouseInterface = new \Basket\Filesystem(new \League\Flysystem\Adapter\Local($warehousePath));
+        $basket = new \Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basket->setWarehouseId($faker->email);
+        $items = [];
+        for ($i = 0; $i < 4; $i++) {
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+        }
+        $basket->add($items);
+        $itemsWarehouse = $basket->findAll();
+        Assert::assertCount(count($itemsWarehouse), $items);
+
+        $basket->destroy();
+        Assert::assertFalse($basket->hasWarehouse());
+        Assert::assertFalse($session->has('basket'));
+    }
+
+    public function testTotalOnBasket(): void
+    {
+        $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
+        $warehouseInterface = new \Basket\Filesystem(new \League\Flysystem\Adapter\Local($warehousePath));
+        $basket = new \Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $items = [];
+        for ($i = 0; $i < 4; $i++) {
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+        }
+        $basket->add($items);
+
+        $total = array_sum(array_map(function (Item $item):float {
+            return $item->quantity() * $item->price();
+        },$items));
+        Assert::assertSame($basket->total(), $total);
+
+    }
+
+    public function testMergeWarehouse(): void
+    {
+        $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
+        $warehouseInterface = new \Basket\Filesystem(new \League\Flysystem\Adapter\Local($warehousePath));
+        $faker = Factory::create();
+
+        $basketGuest = new \Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $items = [];
+        for ($i = 0; $i < 4; $i++) {
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+        }
+        $itemsWarehouseGuest = $items;
+        $basketGuest->add($items);
+        foreach ($basketGuest->findAll() as $item) {
+            Assert::assertTrue(in_array($item, $itemsWarehouseGuest, false));
+        }
+        Assert::assertCount(count($basketGuest->findAll()), $items);
+
+        $basketAuth = new \Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basketAuth->setWarehouseId($faker->email);
+        $items = [];
+        for ($i = 0; $i < 4; $i++) {
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+        }
+        $itemsWarehouseAuth = $items;
+        $basketAuth->add($items);
+        foreach ($basketAuth->findAll() as $item) {
+            Assert::assertTrue(in_array($item, $itemsWarehouseAuth, false));
+        }
+        Assert::assertCount(count($basketGuest->findAll()), $items);
+
+        $itemsWarehouse = array_merge($itemsWarehouseGuest, $itemsWarehouseAuth);
+
+        $basketAuth->mergeWarehouse($basketGuest->warehouse());
+
+        foreach ($basketAuth->findAll() as $item) {
+            Assert::assertTrue(in_array($item, $itemsWarehouse, false));
+        }
+        Assert::assertCount(count($basketAuth->findAll()), $itemsWarehouse);
     }
 }

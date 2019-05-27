@@ -17,11 +17,13 @@
   "minimum-stability": "stable",
   "require": {
     "php": "^7.2",
+    "cocur/slugify": "^3.2",
     "league/flysystem": "^1.0",
     "ramsey/uuid": "^3.8",
     "symfony/http-foundation": "^4.2"
   },
   "require-dev": {
+    "fzaninotto/faker": "^1.8",
     "phpstan/phpstan": "^0.11.6",
     "phpstan/phpstan-phpunit": "^0.11.1",
     "phpstan/phpstan-strict-rules": "^0.11.0",

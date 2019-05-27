@@ -49,6 +49,13 @@ final class Basket
         return $this->warehouse !== null;
     }
 
+    public function setWarehouseId(string $warehouseId): void
+    {
+        $warehouse = new Warehouse();
+        $warehouse->setWarehouseId($warehouseId);
+        $this->warehouse = $warehouse;
+    }
+
     /**
      * @param Item[] $items
      */
@@ -97,9 +104,29 @@ final class Basket
         $this->warehouse = null;
     }
 
+    public function mergeWarehouse(Warehouse $warehouse): void
+    {
+        $actualWarehouse = $this->warehouse();
+        $this->setWarehouseId($warehouse->warehouseId());
+        $items = $this->findAll();
+        $this->destroy();
+        $this->setWarehouseId($actualWarehouse->warehouseId());
+        $this->add($items);
+    }
+
+    public function total(): float
+    {
+        return array_sum(array_map(function (Item $item):float {
+            return $item->quantity() * $item->price();
+        },$this->findAll()));
+
+    }
+
     private function loadWarehouse(): Warehouse
     {
-        if ($this->session->has('basket')) {
+        if($this->hasWarehouse()){
+            $warehouseId = $this->warehouse->warehouseId();
+        }elseif ($this->session->has('basket')) {
             $warehouseId = key($this->session->get('basket'));
         } else {
             $warehouseId = Uuid::uuid4()->toString();
@@ -107,6 +134,7 @@ final class Basket
         $warehouse = new Warehouse();
         $warehouse->setWarehouseId($warehouseId);
 
+        $this->warehouse = $warehouse;
         return $warehouse;
     }
 
@@ -114,4 +142,6 @@ final class Basket
     {
         $this->session->set('basket', [$warehouse->warehouseId() => $this->items]);
     }
+
+
 }

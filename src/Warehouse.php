@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Basket;
 
+use Cocur\Slugify\Slugify;
+
 final class Warehouse
 {
     /**
@@ -18,6 +20,6 @@ final class Warehouse
 
     public function setWarehouseId(string $warehouseId): void
     {
-        $this->warehouseId = $warehouseId;
+        $this->warehouseId = (new Slugify())->slugify($warehouseId);
     }
 }
