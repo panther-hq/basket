@@ -1,5 +1,4 @@
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg)](https://php.net/)
-[![Latest Stable Version](https://img.shields.io/packagist/v/panther-hq/basket.svg)](https://packagist.org/packages/panther-hq/basket)
 [![Build Status](https://travis-ci.org/panther-hq/basket.svg?branch=master)](https://travis-ci.org/panther-hq/basket)
 [![Total Downloads](https://poser.pugx.org/panther-hq/basket/downloads)](https://packagist.org/packages/panther-hq/basket)
 [![License](https://poser.pugx.org/panther-hq/basket/license)](https://packagist.org/packages/panther-hq/basket)

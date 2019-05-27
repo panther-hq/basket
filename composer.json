@@ -16,7 +16,10 @@
   ],
   "minimum-stability": "stable",
   "require": {
-    "php": "^7.2"
+    "php": "^7.2",
+    "league/flysystem": "^1.0",
+    "ramsey/uuid": "^3.8",
+    "symfony/http-foundation": "^4.2"
   },
   "require-dev": {
     "phpstan/phpstan": "^0.11.6",

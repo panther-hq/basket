@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Basket\Tests\Item;
+namespace Basket\Tests\Unit\Item;
 
+use Basket\Exception\ItemException;
 use Basket\Item\Item;
 use Basket\Item\NumericItemId;
 use Basket\Item\TextItemId;
@@ -28,5 +29,17 @@ final class ItemTest extends TestCase
         Assert::assertSame('3009062a-6679-4d17-a51c-507679f24e8b', $item->itemId()->id());
         Assert::assertSame(1, $item->quantity());
         Assert::assertSame(9.99, $item->price());
+    }
+
+    public function testQuantityException(): void
+    {
+        $this->expectException(ItemException::class);
+        new Item(new TextItemId('3009062a-6679-4d17-a51c-507679f24e8b'), 0, 9.99);
+    }
+
+    public function testPriceException(): void
+    {
+        $this->expectException(ItemException::class);
+        new Item(new TextItemId('3009062a-6679-4d17-a51c-507679f24e8b'), 1, 0.00);
     }
 }

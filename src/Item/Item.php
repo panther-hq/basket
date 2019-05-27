@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Basket\Item;
 
+use Basket\Exception\ItemException;
+
 final class Item
 {
     /**
@@ -23,6 +25,14 @@ final class Item
 
     public function __construct(ItemId $itemId, int $quantity, float $price)
     {
+        if ($quantity <= 0) {
+            throw new ItemException(sprintf('quantity for item with id %s can not be %s', $itemId->id(), $quantity));
+        }
+
+        if ($price <= 0) {
+            throw new ItemException(sprintf('price for item with id %s can not be %s', $itemId->id(), $price));
+        }
+
         $this->itemId = $itemId;
         $this->quantity = $quantity;
         $this->price = $price;
