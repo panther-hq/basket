@@ -70,17 +70,18 @@ final class FilesystemTest extends TestCase
     public function testFindAllFromWarehouse(): void
     {
         $warehouse = new Warehouse();
-        $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
+        $warehouse->setWarehouseId('02d040a2-bdee-4767-858e-e8d333f6a671');
 
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $basket = new \Basket\Filesystem(new \League\Flysystem\Adapter\Local($warehousePath));
         $basket->add($item = new Item(
-            $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $itemId = new TextItemId('827fd18e-5672-429c-9147-1a16ff6696bf'),
             1,
             9.99
         ), $warehouse);
 
         $items = $basket->findAll($warehouse);
+
         /** @var Item $basketItem */
         foreach ($items as $basketItem) {
             Assert::assertSame($item->itemId()->id(), $basketItem->itemId()->id());

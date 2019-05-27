@@ -33,7 +33,8 @@ final class Basket
     public function __construct(
         WarehouseInterface $warehouseInterface,
         SessionInterface $session
-    ) {
+    )
+    {
         $this->warehouseInterface = $warehouseInterface;
         $this->session = $session;
     }
@@ -71,6 +72,21 @@ final class Basket
         $warehouse = $this->loadWarehouse();
 
         return $this->warehouseInterface->findAll($warehouse);
+    }
+
+
+    /**
+     * @param Item[] $items
+     */
+    public function remove(array $items): void
+    {
+        $warehouse = $this->loadWarehouse();
+        array_walk($items, function (Item $item) use ($warehouse) {
+            $this->warehouseInterface->remove($item, $warehouse);
+        });
+
+        $this->items = $this->findAll();
+        $this->save($warehouse);
     }
 
     public function destroy(): void

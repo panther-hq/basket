@@ -103,4 +103,25 @@ final class BasketTest extends TestCase
         Assert::assertFalse($basket->hasWarehouse());
         Assert::assertFalse($session->has('basket'));
     }
+
+    public function testRemoveItemFromBasket(): void
+    {
+        $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
+        $warehouseInterface = new \Basket\Filesystem(new \League\Flysystem\Adapter\Local($warehousePath));
+        $basket = new \Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+
+        $items = [];
+        for ($i = 0; $i < 4; $i++) {
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+        }
+        $basket->add($items);
+
+        $removeItems = [
+            current($items),
+            end($items),
+        ];
+        $basket->remove($removeItems);
+
+        Assert::assertCount(count($basket->findAll()), current($session->get('basket')));
+    }
 }
