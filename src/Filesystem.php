@@ -7,8 +7,6 @@ namespace Basket;
 use Basket\Exception\WarehouseException;
 use Basket\Item\Item;
 use Basket\Item\ItemId;
-use League\Flysystem\AdapterInterface;
-use League\Flysystem\Config;
 
 final class Filesystem implements WarehouseInterface
 {
@@ -17,12 +15,9 @@ final class Filesystem implements WarehouseInterface
      */
     private $filesystem;
 
-    /**
-     * @param Config|array $config
-     */
-    public function __construct(AdapterInterface $adapter, $config = null)
+    public function __construct(\League\Flysystem\Filesystem $filesystem)
     {
-        $this->filesystem = new \League\Flysystem\Filesystem($adapter, $config);
+        $this->filesystem = $filesystem;
     }
 
     public function add(Item $item, Warehouse $warehouse): void
