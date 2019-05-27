@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Basket;
 
+use Basket\Exception\WarehouseException;
 use Basket\Item\Item;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -33,8 +34,7 @@ final class Basket
     public function __construct(
         WarehouseInterface $warehouseInterface,
         SessionInterface $session
-    )
-    {
+    ) {
         $this->warehouseInterface = $warehouseInterface;
         $this->session = $session;
     }
@@ -46,7 +46,7 @@ final class Basket
 
     public function hasWarehouse(): bool
     {
-        return $this->warehouse !== null;
+        return $this->warehouse instanceof Warehouse;
     }
 
     public function setWarehouseId(string $warehouseId): void
@@ -81,14 +81,13 @@ final class Basket
         return $this->warehouseInterface->findAll($warehouse);
     }
 
-
     /**
      * @param Item[] $items
      */
     public function remove(array $items): void
     {
         $warehouse = $this->loadWarehouse();
-        array_walk($items, function (Item $item) use ($warehouse) {
+        array_walk($items, function (Item $item) use ($warehouse): void {
             $this->warehouseInterface->remove($item, $warehouse);
         });
 
@@ -107,6 +106,9 @@ final class Basket
     public function mergeWarehouse(Warehouse $warehouse): void
     {
         $actualWarehouse = $this->warehouse();
+        if (!$actualWarehouse instanceof Warehouse) {
+            throw new WarehouseException(sprintf('Warehouse is not exists'));
+        }
         $this->setWarehouseId($warehouse->warehouseId());
         $items = $this->findAll();
         $this->destroy();
@@ -116,17 +118,16 @@ final class Basket
 
     public function total(): float
     {
-        return array_sum(array_map(function (Item $item):float {
+        return array_sum(array_map(function (Item $item): float {
             return $item->quantity() * $item->price();
-        },$this->findAll()));
-
+        }, $this->findAll()));
     }
 
     private function loadWarehouse(): Warehouse
     {
-        if($this->hasWarehouse()){
-            $warehouseId = $this->warehouse->warehouseId();
-        }elseif ($this->session->has('basket')) {
+        if ($this->warehouse() instanceof Warehouse) {
+            $warehouseId = $this->warehouse()->warehouseId();
+        } elseif ($this->session->has('basket')) {
             $warehouseId = key($this->session->get('basket'));
         } else {
             $warehouseId = Uuid::uuid4()->toString();
@@ -135,6 +136,7 @@ final class Basket
         $warehouse->setWarehouseId($warehouseId);
 
         $this->warehouse = $warehouse;
+
         return $warehouse;
     }
 
@@ -142,6 +144,4 @@ final class Basket
     {
         $this->session->set('basket', [$warehouse->warehouseId() => $this->items]);
     }
-
-
 }

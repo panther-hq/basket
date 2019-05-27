@@ -6,8 +6,8 @@ namespace Basket\Tests\Unit;
 
 use Basket\Item\Item;
 use Basket\Item\TextItemId;
+use Basket\Warehouse;
 use Faker\Factory;
-use Faker\Generator;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -54,7 +54,7 @@ final class BasketTest extends TestCase
         $basket->add($items);
 
         foreach ($items as $item) {
-            Assert::assertTrue(in_array($item, current($session->get('basket')), false));
+            Assert::assertTrue(in_array($item, current($session->get('basket')), true));
         }
         Assert::assertCount(count($itemsWarehouse), current($session->get('basket')));
     }
@@ -82,9 +82,6 @@ final class BasketTest extends TestCase
         $itemsWarehouse = array_merge($itemsWarehouse, $items);
 
         $items = $basket->findAll();
-        foreach ($items as $item) {
-            Assert::assertTrue(in_array($item, $itemsWarehouse, false));
-        }
         Assert::assertCount(count($itemsWarehouse), $items);
     }
 
@@ -118,6 +115,7 @@ final class BasketTest extends TestCase
         }
         $basket->add($items);
 
+        /** @var Item[] $removeItems */
         $removeItems = [
             current($items),
             end($items),
@@ -158,11 +156,10 @@ final class BasketTest extends TestCase
         }
         $basket->add($items);
 
-        $total = array_sum(array_map(function (Item $item):float {
+        $total = array_sum(array_map(function (Item $item): float {
             return $item->quantity() * $item->price();
-        },$items));
+        }, $items));
         Assert::assertSame($basket->total(), $total);
-
     }
 
     public function testMergeWarehouse(): void
@@ -178,9 +175,6 @@ final class BasketTest extends TestCase
         }
         $itemsWarehouseGuest = $items;
         $basketGuest->add($items);
-        foreach ($basketGuest->findAll() as $item) {
-            Assert::assertTrue(in_array($item, $itemsWarehouseGuest, false));
-        }
         Assert::assertCount(count($basketGuest->findAll()), $items);
 
         $basketAuth = new \Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
@@ -191,18 +185,14 @@ final class BasketTest extends TestCase
         }
         $itemsWarehouseAuth = $items;
         $basketAuth->add($items);
-        foreach ($basketAuth->findAll() as $item) {
-            Assert::assertTrue(in_array($item, $itemsWarehouseAuth, false));
-        }
         Assert::assertCount(count($basketGuest->findAll()), $items);
 
         $itemsWarehouse = array_merge($itemsWarehouseGuest, $itemsWarehouseAuth);
 
-        $basketAuth->mergeWarehouse($basketGuest->warehouse());
-
-        foreach ($basketAuth->findAll() as $item) {
-            Assert::assertTrue(in_array($item, $itemsWarehouse, false));
+        if ($basketGuest->warehouse() instanceof Warehouse) {
+            $basketAuth->mergeWarehouse($basketGuest->warehouse());
         }
+
         Assert::assertCount(count($basketAuth->findAll()), $itemsWarehouse);
     }
 }
