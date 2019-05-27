@@ -14,8 +14,6 @@
       "email": "wojciech.sliwka90@gmail.com"
     }
   ],
-  "minimum-stability": "stable",
-  "prefer-stable": true,
   "require": {
     "php": "^7.2",
     "cocur/slugify": "^3.2",
