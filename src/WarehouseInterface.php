@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Basket;
+namespace PantherHQ\Basket;
 
-use Basket\Item\Item;
-use Basket\Item\ItemId;
+use PantherHQ\Basket\Item\Item;
+use PantherHQ\Basket\Item\ItemId;
 
 interface WarehouseInterface
 {

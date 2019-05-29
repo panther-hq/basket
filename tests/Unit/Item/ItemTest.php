@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Basket\Tests\Unit\Item;
+namespace PantherHQ\Basket\Tests\Unit\Item;
 
-use Basket\Exception\ItemException;
-use Basket\Item\Item;
-use Basket\Item\NumericItemId;
-use Basket\Item\TextItemId;
+use PantherHQ\Basket\Exception\ItemException;
+use PantherHQ\Basket\Item\Item;
+use PantherHQ\Basket\Item\NumericItemId;
+use PantherHQ\Basket\Item\TextItemId;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 

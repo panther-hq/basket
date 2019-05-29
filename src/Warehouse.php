@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Basket;
+namespace PantherHQ\Basket;
 
 use Cocur\Slugify\Slugify;
 

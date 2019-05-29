@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Basket;
+namespace PantherHQ\Basket;
 
-use Basket\Exception\WarehouseException;
-use Basket\Item\Item;
-use Basket\Item\ItemId;
+use PantherHQ\Basket\Exception\WarehouseException;
+use PantherHQ\Basket\Item\Item;
+use PantherHQ\Basket\Item\ItemId;
 
 final class Filesystem implements WarehouseInterface
 {

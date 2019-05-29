@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Basket\Exception;
+namespace PantherHQ\Basket\Exception;
 
 abstract class Exception extends \Exception
 {

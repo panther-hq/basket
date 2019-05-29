@@ -35,12 +35,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Basket\\": "src/"
+      "PantherHQ\\Basket\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Basket\\Tests\\": "tests/"
+      "PantherHQ\\Basket\\Tests\\": "tests/"
     }
   },
   "scripts": {

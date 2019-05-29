@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Basket\Item;
+namespace PantherHQ\Basket\Item;
 
-use Basket\Exception\ItemException;
+use PantherHQ\Basket\Exception\ItemException;
 
 final class Item
 {

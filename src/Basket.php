@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Basket;
+namespace PantherHQ\Basket;
 
-use Basket\Exception\WarehouseException;
-use Basket\Item\Item;
+use PantherHQ\Basket\Exception\WarehouseException;
+use PantherHQ\Basket\Item\Item;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 

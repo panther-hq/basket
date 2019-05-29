@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Basket\Item;
+namespace PantherHQ\Basket\Item;
 
 final class NumericItemId implements ItemId
 {
