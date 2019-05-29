@@ -123,6 +123,13 @@ final class Basket implements BasketInterface
         }, $this->findAll()));
     }
 
+    public function count(): int
+    {
+        return (int) array_sum(array_map(function (ItemInterface $item): int {
+            return $item->quantity();
+        }, $this->findAll()));
+    }
+
     private function loadWarehouse(): Warehouse
     {
         if ($this->warehouse() instanceof Warehouse) {

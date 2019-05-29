@@ -34,4 +34,6 @@ interface BasketInterface
     public function mergeWarehouse(Warehouse $warehouse): void;
 
     public function total(): float;
+
+    public function count(): int;
 }
