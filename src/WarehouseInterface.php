@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace PantherHQ\Basket;
 
-use PantherHQ\Basket\Item\Item;
 use PantherHQ\Basket\Item\ItemId;
+use PantherHQ\Basket\Item\ItemInterface;
 
 interface WarehouseInterface
 {
-    public function add(Item $item, Warehouse $warehouse): void;
+    public function add(ItemInterface $item, Warehouse $warehouse): void;
 
-    public function remove(Item $item, Warehouse $warehouse): void;
+    public function remove(ItemInterface $item, Warehouse $warehouse): void;
 
-    public function getByItemId(ItemId $itemId, Warehouse $warehouse): Item;
+    public function getByItemId(ItemId $itemId, Warehouse $warehouse): ItemInterface;
 
     /**
-     * @return Item[]
+     * @return ItemInterface[]
      */
     public function findAll(Warehouse $warehouse): array;
 

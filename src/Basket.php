@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace PantherHQ\Basket;
 
 use PantherHQ\Basket\Exception\WarehouseException;
-use PantherHQ\Basket\Item\Item;
+use PantherHQ\Basket\Item\ItemInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-final class Basket
+final class Basket implements BasketInterface
 {
     /**
      * @var WarehouseInterface
@@ -17,7 +17,7 @@ final class Basket
     private $warehouseInterface;
 
     /**
-     * @var Item[]
+     * @var ItemInterface[]
      */
     private $items = [];
 
@@ -57,12 +57,12 @@ final class Basket
     }
 
     /**
-     * @param Item[] $items
+     * @param ItemInterface[] $items
      */
     public function add(array $items): void
     {
         $warehouse = $this->loadWarehouse();
-        $this->items = array_merge($this->findAll(), array_map(function (Item $item) use ($warehouse): Item {
+        $this->items = array_merge($this->findAll(), array_map(function (ItemInterface $item) use ($warehouse): ItemInterface {
             $this->warehouseInterface->add($item, $warehouse);
 
             return $item;
@@ -72,7 +72,7 @@ final class Basket
     }
 
     /**
-     * @return Item[]
+     * @return ItemInterface[]
      */
     public function findAll(): array
     {
@@ -82,12 +82,12 @@ final class Basket
     }
 
     /**
-     * @param Item[] $items
+     * @param ItemInterface[] $items
      */
     public function remove(array $items): void
     {
         $warehouse = $this->loadWarehouse();
-        array_walk($items, function (Item $item) use ($warehouse): void {
+        array_walk($items, function (ItemInterface $item) use ($warehouse): void {
             $this->warehouseInterface->remove($item, $warehouse);
         });
 
@@ -118,7 +118,7 @@ final class Basket
 
     public function total(): float
     {
-        return array_sum(array_map(function (Item $item): float {
+        return array_sum(array_map(function (ItemInterface $item): float {
             return $item->quantity() * $item->price();
         }, $this->findAll()));
     }

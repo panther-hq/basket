@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PantherHQ\Basket\Tests\Unit;
 
+use Faker\Factory;
+use League\Flysystem\Filesystem;
 use PantherHQ\Basket\Item\Item;
 use PantherHQ\Basket\Item\TextItemId;
 use PantherHQ\Basket\Warehouse;
-use Faker\Factory;
-use League\Flysystem\Filesystem;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;

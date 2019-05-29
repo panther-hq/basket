@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PantherHQ\Basket\Tests\Unit;
 
+use League\Flysystem\Filesystem;
 use PantherHQ\Basket\Item\Item;
 use PantherHQ\Basket\Item\TextItemId;
 use PantherHQ\Basket\Warehouse;
-use League\Flysystem\Filesystem;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 

@@ -6,7 +6,7 @@ namespace PantherHQ\Basket\Item;
 
 use PantherHQ\Basket\Exception\ItemException;
 
-final class Item
+final class Item implements ItemInterface
 {
     /**
      * @var ItemId
