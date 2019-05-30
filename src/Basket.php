@@ -119,7 +119,7 @@ final class Basket implements BasketInterface
     public function total(): float
     {
         return array_sum(array_map(function (ItemInterface $item): float {
-            return $item->quantity() * $item->price();
+            return $item->total();
         }, $this->findAll()));
     }
 

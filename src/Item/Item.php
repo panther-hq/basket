@@ -52,4 +52,9 @@ final class Item implements ItemInterface
     {
         return $this->price;
     }
+
+    public function total(): float
+    {
+        return $this->quantity * $this->price;
+    }
 }

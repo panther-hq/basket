@@ -11,4 +11,6 @@ interface ItemInterface
     public function quantity(): int;
 
     public function price(): float;
+
+    public function total(): float;
 }
