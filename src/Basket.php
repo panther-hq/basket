@@ -31,12 +31,19 @@ final class Basket implements BasketInterface
      */
     private $session;
 
+    /**
+     * @var string
+     */
+    private $sessionKey;
+
     public function __construct(
         WarehouseInterface $warehouseInterface,
-        SessionInterface $session
+        SessionInterface $session,
+        string $sessionKey
     ) {
         $this->warehouseInterface = $warehouseInterface;
         $this->session = $session;
+        $this->sessionKey = $sessionKey;
     }
 
     public function warehouse(): ?Warehouse
@@ -99,7 +106,7 @@ final class Basket implements BasketInterface
     {
         $warehouse = $this->loadWarehouse();
         $this->warehouseInterface->destroy($warehouse);
-        $this->session->remove('basket');
+        $this->session->remove($this->sessionKey);
         $this->warehouse = null;
     }
 
@@ -134,8 +141,8 @@ final class Basket implements BasketInterface
     {
         if ($this->warehouse() instanceof Warehouse) {
             $warehouseId = $this->warehouse()->warehouseId();
-        } elseif ($this->session->has('basket')) {
-            $warehouseId = key($this->session->get('basket'));
+        } elseif ($this->session->has($this->sessionKey)) {
+            $warehouseId = key($this->session->get($this->sessionKey));
         } else {
             $warehouseId = Uuid::uuid4()->toString();
         }
@@ -149,6 +156,6 @@ final class Basket implements BasketInterface
 
     private function save(Warehouse $warehouse): void
     {
-        $this->session->set('basket', [$warehouse->warehouseId() => $this->items]);
+        $this->session->set($this->sessionKey, [$warehouse->warehouseId() => $this->items]);
     }
 }

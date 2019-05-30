@@ -21,7 +21,7 @@ final class BasketTest extends TestCase
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
 
         $items = [];
         for ($i = 0; $i < 5; $i++) {
@@ -37,7 +37,7 @@ final class BasketTest extends TestCase
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
@@ -64,7 +64,7 @@ final class BasketTest extends TestCase
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
@@ -90,7 +90,7 @@ final class BasketTest extends TestCase
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
@@ -108,7 +108,7 @@ final class BasketTest extends TestCase
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
@@ -131,7 +131,7 @@ final class BasketTest extends TestCase
         $faker = Factory::create();
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
         $basket->setWarehouseId($faker->email);
         $items = [];
         for ($i = 0; $i < 4; $i++) {
@@ -150,7 +150,7 @@ final class BasketTest extends TestCase
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
         $items = [];
         for ($i = 0; $i < 4; $i++) {
             $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
@@ -167,7 +167,7 @@ final class BasketTest extends TestCase
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
         $items = [];
         for ($i = 0; $i < 4; $i++) {
             $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
@@ -186,7 +186,7 @@ final class BasketTest extends TestCase
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $faker = Factory::create();
 
-        $basketGuest = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basketGuest = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
         $items = [];
         for ($i = 0; $i < 4; $i++) {
             $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
@@ -195,7 +195,7 @@ final class BasketTest extends TestCase
         $basketGuest->add($items);
         Assert::assertCount(count($basketGuest->findAll()), $items);
 
-        $basketAuth = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()));
+        $basketAuth = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
         $basketAuth->setWarehouseId($faker->email);
         $items = [];
         for ($i = 0; $i < 4; $i++) {
