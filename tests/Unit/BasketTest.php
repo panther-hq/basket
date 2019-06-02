@@ -8,14 +8,14 @@ use Faker\Factory;
 use League\Flysystem\Filesystem;
 use PantherHQ\Basket\Item\Item;
 use PantherHQ\Basket\Item\TextItemId;
+use PantherHQ\Basket\Tests\BasketTestCase;
 use PantherHQ\Basket\Warehouse;
 use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
-final class BasketTest extends TestCase
+final class BasketTest extends BasketTestCase
 {
     public function testAddItemsToBasket(): void
     {
@@ -25,7 +25,7 @@ final class BasketTest extends TestCase
 
         $items = [];
         for ($i = 0; $i < 5; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
 
         $basket->add($items);
@@ -41,7 +41,7 @@ final class BasketTest extends TestCase
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
 
         $itemsWarehouse = $items;
@@ -49,7 +49,7 @@ final class BasketTest extends TestCase
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
         $itemsWarehouse = array_merge($itemsWarehouse, $items);
         $basket->add($items);
@@ -68,14 +68,14 @@ final class BasketTest extends TestCase
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
         $itemsWarehouse = $items;
         $basket->add($items);
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
 
         $basket->add($items);
@@ -94,7 +94,7 @@ final class BasketTest extends TestCase
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
         $basket->add($items);
 
@@ -112,7 +112,7 @@ final class BasketTest extends TestCase
 
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
         $basket->add($items);
 
@@ -128,14 +128,13 @@ final class BasketTest extends TestCase
 
     public function testAddOwnWarehouse(): void
     {
-        $faker = Factory::create();
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
-        $basket->setWarehouseId($faker->email);
+        $basket->setWarehouseId($this->faker()->email);
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
         $basket->add($items);
         $itemsWarehouse = $basket->findAll();
@@ -153,7 +152,7 @@ final class BasketTest extends TestCase
         $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
         $basket->add($items);
 
@@ -170,7 +169,7 @@ final class BasketTest extends TestCase
         $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
         $basket->add($items);
 
@@ -189,7 +188,7 @@ final class BasketTest extends TestCase
         $basketGuest = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
         $itemsWarehouseGuest = $items;
         $basketGuest->add($items);
@@ -199,7 +198,7 @@ final class BasketTest extends TestCase
         $basketAuth->setWarehouseId($faker->email);
         $items = [];
         for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), random_int(1, 10), random_int(1, 100));
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
         }
         $itemsWarehouseAuth = $items;
         $basketAuth->add($items);

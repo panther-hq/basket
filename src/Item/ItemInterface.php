@@ -8,6 +8,8 @@ interface ItemInterface
 {
     public function itemId(): ItemId;
 
+    public function name(): string;
+
     public function quantity(): int;
 
     public function price(): float;

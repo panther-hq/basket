@@ -7,11 +7,11 @@ namespace PantherHQ\Basket\Tests\Unit;
 use League\Flysystem\Filesystem;
 use PantherHQ\Basket\Item\Item;
 use PantherHQ\Basket\Item\TextItemId;
+use PantherHQ\Basket\Tests\BasketTestCase;
 use PantherHQ\Basket\Warehouse;
 use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\TestCase;
 
-final class FilesystemTest extends TestCase
+final class FilesystemTest extends BasketTestCase
 {
     public function testAddItemToWarehouse(): void
     {
@@ -22,6 +22,7 @@ final class FilesystemTest extends TestCase
         $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add(new Item(
             new TextItemId($id = 'c06a00d2-4df5-446e-b1a9-6b7528640b27'),
+            $this->faker()->title,
             1,
             9.99
         ), $warehouse);
@@ -38,6 +39,7 @@ final class FilesystemTest extends TestCase
         $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add($item = new Item(
             new TextItemId($id = '77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $this->faker()->title,
             1,
             9.99
         ), $warehouse);
@@ -58,6 +60,7 @@ final class FilesystemTest extends TestCase
         $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add($item = new Item(
             $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $this->faker()->title,
             1,
             9.99
         ), $warehouse);
@@ -77,6 +80,7 @@ final class FilesystemTest extends TestCase
         $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add($item = new Item(
             $itemId = new TextItemId('827fd18e-5672-429c-9147-1a16ff6696bf'),
+            $this->faker()->title,
             1,
             9.99
         ), $warehouse);
@@ -100,6 +104,7 @@ final class FilesystemTest extends TestCase
         $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add(new Item(
             $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $this->faker()->title,
             1,
             9.99
         ), $warehouse);
