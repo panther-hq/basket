@@ -14,7 +14,6 @@ use PantherHQ\Basket\Item\ItemInterface;
 use PantherHQ\Basket\Warehouse;
 use PantherHQ\Basket\WarehouseInterface;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 final class Database implements WarehouseInterface
 {
@@ -25,19 +24,10 @@ final class Database implements WarehouseInterface
     private $connection;
 
     public function __construct(
-        DatabaseConnection $databaseConnection
+        Connection $connection
     )
     {
-        $config = new Configuration();
-        $connectionParams = array(
-            'dbname' => $databaseConnection->databaseName(),
-            'user' => $databaseConnection->user(),
-            'password' => $databaseConnection->password(),
-            'host' => $databaseConnection->host(),
-            'driver' => $databaseConnection->driver(),
-            'port' => $databaseConnection->port(),
-        );
-        $this->connection = DriverManager::getConnection($connectionParams, $config);
+        $this->connection = $connection;
     }
 
     public function add(ItemInterface $item, Warehouse $warehouse): void
