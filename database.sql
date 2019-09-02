@@ -1,4 +1,5 @@
 CREATE SCHEMA `basket` DEFAULT CHARACTER SET utf8 ;
+USE `basket`;
 CREATE TABLE basket
 (
     basket_id      char(36)           NOT NULL,
