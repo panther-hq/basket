@@ -9,30 +9,16 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\Schema;
 use PantherHQ\Basket\Driver\DatabaseConnection;
+use PantherHQ\Basket\Exception\WarehouseException;
 use PantherHQ\Basket\Item\Item;
+use PantherHQ\Basket\Item\ItemInterface;
 use PantherHQ\Basket\Item\TextItemId;
 use PantherHQ\Basket\Tests\BasketTestCase;
 use PantherHQ\Basket\Warehouse;
+use PHPUnit\Framework\Assert;
 
 final class DatabaseTest extends BasketTestCase
 {
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-    protected function setUp(): void
-    {
-
-        $this->connection = DriverManager::getConnection([
-            'dbname' => 'basket',
-            'user' => 'travis',
-            'password' => '',
-            'host' => '127.0.0.1',
-            'driver' => 'pdo_mysql',
-            'port' => 3306,
-        ]);
-    }
 
     public function testAddItemToWarehouse(): void
     {
@@ -48,9 +34,90 @@ final class DatabaseTest extends BasketTestCase
         ), $warehouse);
 
         $item = $basket->getByItemId($itemId, $warehouse);
-        $this->assertSame($item->name() ,$title);
-        $this->assertSame($item->price() ,$price);
-        $this->assertSame($item->quantity() ,$quantity);
+        Assert::assertSame($item->name() ,$title);
+        Assert::assertSame($item->price() ,$price);
+        Assert::assertSame($item->quantity() ,$quantity);
     }
 
+    public function testRemoveItemFromWarehouse(): void
+    {
+        $warehouse = new Warehouse();
+        $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
+
+        $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
+        $basket->add($item = new Item(
+            $itemId = new TextItemId($id = '77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $this->faker()->title,
+            1,
+            9.99
+        ), $warehouse);
+
+        Assert::assertInstanceOf(ItemInterface::class,$basket->getByItemId($itemId, $warehouse)) ;
+
+        $basket->remove($item, $warehouse);
+
+        $this->expectException(WarehouseException::class);
+        $basket->getByItemId($itemId, $warehouse);
+    }
+
+    public function testGetItemByItemIdFromWarehouse(): void
+    {
+        $warehouse = new Warehouse();
+        $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
+
+        $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
+        $basket->add($item = new Item(
+            $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $this->faker()->title,
+            1,
+            9.99
+        ), $warehouse);
+
+        $basketItem = $basket->getByItemId($itemId, $warehouse);
+        Assert::assertSame($item->itemId()->id(), $basketItem->itemId()->id());
+        Assert::assertSame($item->price(), $basketItem->price());
+        Assert::assertSame($item->quantity(), $basketItem->quantity());
+    }
+
+    public function testFindAllFromWarehouse(): void
+    {
+        $warehouse = new Warehouse();
+        $warehouse->setWarehouseId('02d040a2-bdee-4767-858e-e8d333f6a671');
+
+        $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
+        $basket->add($item = new Item(
+            $itemId = new TextItemId('827fd18e-5672-429c-9147-1a16ff6696bf'),
+            $this->faker()->title,
+            1,
+            9.99
+        ), $warehouse);
+
+        $items = $basket->findAll($warehouse);
+
+        /** @var Item $basketItem */
+        foreach ($items as $basketItem) {
+            Assert::assertSame($item->itemId()->id(), $basketItem->itemId()->id());
+            Assert::assertSame($item->price(), $basketItem->price());
+            Assert::assertSame($item->quantity(), $basketItem->quantity());
+        }
+    }
+//
+//    public function testDestroyWarehouse(): void
+//    {
+//        $warehouse = new Warehouse();
+//        $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
+//
+//        $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
+//        $basket->add(new Item(
+//            $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+//            $this->faker()->title,
+//            1,
+//            9.99
+//        ), $warehouse);
+//
+//        $basket->destroy($warehouse);
+//
+//        $this->expectException(WarehouseException::class);
+//        $basket->getByItemId($itemId, $warehouse);
+//    }
 }

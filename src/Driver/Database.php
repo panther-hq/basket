@@ -47,6 +47,7 @@ final class Database implements WarehouseInterface
             $data = $qb->execute()->fetch();
             $items = [$item];
             if (is_array($data)){
+
                 $qb->delete('basket','b')
                     ->where('b.basket_id = :basket_id')
                     ->setParameter('basket_id',$data['basket_id']);
@@ -56,6 +57,8 @@ final class Database implements WarehouseInterface
                 foreach ($items as $key => $i){
                     if ($i->itemId()->id() === $item->itemId()->id()){
                         $items[$key] = $item;
+                    } else {
+                        $items[] = $item;
                     }
                 }
             }
@@ -82,7 +85,49 @@ final class Database implements WarehouseInterface
 
     public function remove(ItemInterface $item, Warehouse $warehouse): void
     {
-        // TODO: Implement remove() method.
+        $this->connection->beginTransaction();
+        try {
+            $qb = $this->connection->createQueryBuilder();
+            $qb->select([
+                'b.basket_id',
+                'b.warehouse',
+                'b.basket_content',
+                'b.date_at',
+            ])->from('basket','b')
+                ->where('b.warehouse = :warehouse')
+                ->setParameter('warehouse',$warehouse->warehouseId());
+
+            $data = $qb->execute()->fetch();
+
+            /** @var ItemInterface[] $items */
+            $items = unserialize(base64_decode($data['basket_content'],true));
+            foreach ($items as $key => $i){
+                if ($i->itemId()->id() === $item->itemId()->id()){
+                    unset($items[$key]);
+                }
+            }
+            $qb->delete('basket','b')
+                ->where('b.basket_id = :basket_id')
+                ->setParameter('basket_id',$data['basket_id']);
+
+            $qb->insert('basket')->values([
+                'basket_id'=>':basket_id',
+                'warehouse'=>':warehouse',
+                'basket_content'=>':basket_content',
+                'date_at'=>':date_at',
+            ])
+            ->setParameters([
+                'basket_id'=>Uuid::getFactory()->uuid4(),
+                'warehouse'=>$warehouse->warehouseId(),
+                'basket_content'=>base64_encode(serialize($items)),
+                'date_at'=>(new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            ])->execute();
+
+            $this->connection->commit();
+        } catch (\Throwable $exception){
+            $this->connection->rollBack();
+            throw $exception;
+        }
     }
 
     public function getByItemId(ItemId $itemId, Warehouse $warehouse): ItemInterface
@@ -123,12 +168,59 @@ final class Database implements WarehouseInterface
 
     public function findAll(Warehouse $warehouse): array
     {
-        // TODO: Implement findAll() method.
+        $this->connection->beginTransaction();
+        try {
+            $qb = $this->connection->createQueryBuilder();
+            $qb->select([
+                'b.basket_id',
+                'b.warehouse',
+                'b.basket_content',
+                'b.date_at',
+            ])->from('basket','b')
+                ->where('b.warehouse = :warehouse')
+                ->setParameter('warehouse',$warehouse->warehouseId());
+
+            $data = $qb->execute()->fetch();
+            $this->connection->commit();
+        } catch (\Throwable $exception){
+            $this->connection->rollBack();
+            throw $exception;
+        }
+
+        if (!is_array($data)) {
+            return [];
+        }
+
+        $items = unserialize(base64_decode($data['basket_content'],true));
+        return $items;
     }
 
     public function destroy(Warehouse $warehouse): void
     {
-        // TODO: Implement destroy() method.
+        $this->connection->beginTransaction();
+        try {
+            $qb = $this->connection->createQueryBuilder();
+            $qb->select([
+                'b.basket_id',
+                'b.warehouse',
+                'b.basket_content',
+                'b.date_at',
+            ])->from('basket','b')
+                ->where('b.warehouse = :warehouse')
+                ->setParameter('warehouse',$warehouse->warehouseId());
+
+            $data = $qb->execute()->fetch();
+
+            $qb->delete('basket','b')
+                ->where('b.basket_id = :basket_id')
+                ->setParameter('basket_id',$data['basket_id']);
+
+
+            $this->connection->commit();
+        } catch (\Throwable $exception){
+            $this->connection->rollBack();
+            throw $exception;
+        }
     }
 
 

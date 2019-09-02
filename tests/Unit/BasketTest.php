@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PantherHQ\Basket\Tests\Unit;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use Faker\Factory;
 use League\Flysystem\Filesystem;
 use PantherHQ\Basket\Item\Item;
@@ -17,6 +19,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 final class BasketTest extends BasketTestCase
 {
+
     public function testAddItemsToBasket(): void
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
@@ -184,6 +187,39 @@ final class BasketTest extends BasketTestCase
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
         $warehouseInterface = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
+        $faker = Factory::create();
+
+        $basketGuest = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
+        $items = [];
+        for ($i = 0; $i < 4; $i++) {
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
+        }
+        $itemsWarehouseGuest = $items;
+        $basketGuest->add($items);
+        Assert::assertCount(count($basketGuest->findAll()), $items);
+
+        $basketAuth = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
+        $basketAuth->setWarehouseId($faker->email);
+        $items = [];
+        for ($i = 0; $i < 4; $i++) {
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
+        }
+        $itemsWarehouseAuth = $items;
+        $basketAuth->add($items);
+        Assert::assertCount(count($basketGuest->findAll()), $items);
+
+        $itemsWarehouse = array_merge($itemsWarehouseGuest, $itemsWarehouseAuth);
+
+        if ($basketGuest->warehouse() instanceof Warehouse) {
+            $basketAuth->mergeWarehouse($basketGuest->warehouse());
+        }
+
+        Assert::assertCount(count($basketAuth->findAll()), $itemsWarehouse);
+    }
+
+    public function testMergeWarehouseDatabase(): void
+    {
+        $warehouseInterface = new \PantherHQ\Basket\Driver\Database($this->connection);
         $faker = Factory::create();
 
         $basketGuest = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
