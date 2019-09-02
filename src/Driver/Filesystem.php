@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PantherHQ\Basket;
+namespace PantherHQ\Basket\Driver;
 
 use PantherHQ\Basket\Exception\WarehouseException;
 use PantherHQ\Basket\Item\ItemId;
 use PantherHQ\Basket\Item\ItemInterface;
+use PantherHQ\Basket\Warehouse;
+use PantherHQ\Basket\WarehouseInterface;
 
 final class Filesystem implements WarehouseInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PantherHQ\Basket\Tests\Unit;
+namespace PantherHQ\Basket\Tests\Unit\Driver;
 
 use League\Flysystem\Filesystem;
 use PantherHQ\Basket\Item\Item;
@@ -19,7 +19,7 @@ final class FilesystemTest extends BasketTestCase
         $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
 
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
-        $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
+        $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add(new Item(
             new TextItemId($id = 'c06a00d2-4df5-446e-b1a9-6b7528640b27'),
             $this->faker()->title,
@@ -36,7 +36,7 @@ final class FilesystemTest extends BasketTestCase
         $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
 
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
-        $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
+        $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add($item = new Item(
             new TextItemId($id = '77ac8983-42f7-4cec-960a-f636b92abb06'),
             $this->faker()->title,
@@ -57,7 +57,7 @@ final class FilesystemTest extends BasketTestCase
         $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
 
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
-        $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
+        $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add($item = new Item(
             $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
             $this->faker()->title,
@@ -77,7 +77,7 @@ final class FilesystemTest extends BasketTestCase
         $warehouse->setWarehouseId('02d040a2-bdee-4767-858e-e8d333f6a671');
 
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
-        $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
+        $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add($item = new Item(
             $itemId = new TextItemId('827fd18e-5672-429c-9147-1a16ff6696bf'),
             $this->faker()->title,
@@ -101,7 +101,7 @@ final class FilesystemTest extends BasketTestCase
         $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
 
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
-        $basket = new \PantherHQ\Basket\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
+        $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add(new Item(
             $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
             $this->faker()->title,

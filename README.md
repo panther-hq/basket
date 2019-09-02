@@ -4,3 +4,16 @@
 [![Total Downloads](https://poser.pugx.org/panther-hq/basket/downloads)](https://packagist.org/packages/panther-hq/basket)
 [![License](https://poser.pugx.org/panther-hq/basket/license)](https://packagist.org/packages/panther-hq/basket)
 [![Coverage Status](https://coveralls.io/repos/github/panther-hq/basket/badge.svg?branch=master)](https://coveralls.io/github/panther-hq/basket?branch=master)
+
+#SQL Table
+```sql
+CREATE TABLE basket
+(
+    basket_id      char(36)           NOT NULL,
+    warehouse      VARCHAR(100)       NOT NULL,
+    basket_content LONGTEXT           NOT NULL,
+    date_at        datetime           NOT NULL,
+    INDEX warehouse_idx (warehouse),
+    PRIMARY KEY (basket_id)
+);
+```
