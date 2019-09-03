@@ -1,14 +1,9 @@
 <?php
-declare(strict_types=1);
 
+declare(strict_types=1);
 
 namespace PantherHQ\Basket\Tests\Unit\Driver;
 
-
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Schema\Schema;
-use PantherHQ\Basket\Driver\DatabaseConnection;
 use PantherHQ\Basket\Exception\WarehouseException;
 use PantherHQ\Basket\Item\Item;
 use PantherHQ\Basket\Item\ItemInterface;
@@ -19,7 +14,6 @@ use PHPUnit\Framework\Assert;
 
 final class DatabaseTest extends BasketTestCase
 {
-
     public function testAddItemToWarehouse(): void
     {
         $warehouse = new Warehouse();
@@ -34,9 +28,9 @@ final class DatabaseTest extends BasketTestCase
         ), $warehouse);
 
         $item = $basket->getByItemId($itemId, $warehouse);
-        Assert::assertSame($item->name() ,$title);
-        Assert::assertSame($item->price() ,$price);
-        Assert::assertSame($item->quantity() ,$quantity);
+        Assert::assertSame($item->name(), $title);
+        Assert::assertSame($item->price(), $price);
+        Assert::assertSame($item->quantity(), $quantity);
     }
 
     public function testRemoveItemFromWarehouse(): void
@@ -52,7 +46,7 @@ final class DatabaseTest extends BasketTestCase
             9.99
         ), $warehouse);
 
-        Assert::assertInstanceOf(ItemInterface::class,$basket->getByItemId($itemId, $warehouse)) ;
+        Assert::assertInstanceOf(ItemInterface::class, $basket->getByItemId($itemId, $warehouse));
 
         $basket->remove($item, $warehouse);
 
@@ -101,23 +95,23 @@ final class DatabaseTest extends BasketTestCase
             Assert::assertSame($item->quantity(), $basketItem->quantity());
         }
     }
-//
-//    public function testDestroyWarehouse(): void
-//    {
-//        $warehouse = new Warehouse();
-//        $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
-//
-//        $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
-//        $basket->add(new Item(
-//            $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
-//            $this->faker()->title,
-//            1,
-//            9.99
-//        ), $warehouse);
-//
-//        $basket->destroy($warehouse);
-//
-//        $this->expectException(WarehouseException::class);
-//        $basket->getByItemId($itemId, $warehouse);
-//    }
+
+    public function testDestroyWarehouse(): void
+    {
+        $warehouse = new Warehouse();
+        $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
+
+        $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
+        $basket->add(new Item(
+            $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $this->faker()->title,
+            1,
+            9.99
+        ), $warehouse);
+
+        $basket->destroy($warehouse);
+
+        $this->expectException(WarehouseException::class);
+        $basket->getByItemId($itemId, $warehouse);
+    }
 }

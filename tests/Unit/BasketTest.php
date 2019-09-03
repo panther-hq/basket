@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PantherHQ\Basket\Tests\Unit;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
 use Faker\Factory;
 use League\Flysystem\Filesystem;
 use PantherHQ\Basket\Item\Item;
@@ -19,7 +17,6 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 final class BasketTest extends BasketTestCase
 {
-
     public function testAddItemsToBasket(): void
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
@@ -34,6 +31,22 @@ final class BasketTest extends BasketTestCase
         $basket->add($items);
         Assert::assertContains($items, $session->get('basket'));
         Assert::assertCount(count($items), current($session->get('basket')));
+    }
+
+    public function testAddItemsToBasketDatabase(): void
+    {
+        $warehouseInterface = new \PantherHQ\Basket\Driver\Database($this->connection);
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
+
+        $items = [];
+        for ($i = 0; $i < 5; $i++) {
+            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
+        }
+
+        $basket->add($items);
+        Assert::assertContains($items, $session->get('basket'));
+        Assert::assertCount(count($items), current($session->get('basket')));
+        Assert::assertCount(count($items), $basket->findAll());
     }
 
     public function testAddItemsToBasketInDifferentInstances(): void

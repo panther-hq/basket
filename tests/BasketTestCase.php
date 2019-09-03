@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 
 class BasketTestCase extends TestCase
 {
-
     /**
      * @var Connection
      */
@@ -20,7 +19,6 @@ class BasketTestCase extends TestCase
 
     protected function setUp(): void
     {
-
         $this->connection = DriverManager::getConnection([
             'dbname' => 'basket',
             'user' => 'travis',
@@ -29,9 +27,6 @@ class BasketTestCase extends TestCase
             'driver' => 'pdo_mysql',
             'port' => 3306,
         ]);
-        $platform = $this->connection->getDatabasePlatform();
-
-        $this->connection->executeUpdate($platform->getTruncateTableSQL('basket', true /* whether to cascade */));
     }
 
     protected function tearDown(): void

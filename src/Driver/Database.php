@@ -1,13 +1,10 @@
 <?php
-declare(strict_types=1);
 
+declare(strict_types=1);
 
 namespace PantherHQ\Basket\Driver;
 
-
-use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
 use PantherHQ\Basket\Exception\WarehouseException;
 use PantherHQ\Basket\Item\ItemId;
 use PantherHQ\Basket\Item\ItemInterface;
@@ -17,7 +14,6 @@ use Ramsey\Uuid\Uuid;
 
 final class Database implements WarehouseInterface
 {
-
     /**
      * @var Connection
      */
@@ -25,14 +21,14 @@ final class Database implements WarehouseInterface
 
     public function __construct(
         Connection $connection
-    )
-    {
+    ) {
         $this->connection = $connection;
     }
 
     public function add(ItemInterface $item, Warehouse $warehouse): void
     {
         $this->connection->beginTransaction();
+
         try {
             $qb = $this->connection->createQueryBuilder();
             $qb->select([
@@ -40,52 +36,52 @@ final class Database implements WarehouseInterface
                 'b.warehouse',
                 'b.basket_content',
                 'b.date_at',
-            ])->from('basket','b')
+            ])->from('basket', 'b')
                 ->where('b.warehouse = :warehouse')
-                ->setParameter('warehouse',$warehouse->warehouseId());
+                ->setParameter('warehouse', $warehouse->warehouseId());
 
             $data = $qb->execute()->fetch();
-            $items = [$item];
-            if (is_array($data)){
 
-                $qb->delete('basket','b')
-                    ->where('b.basket_id = :basket_id')
-                    ->setParameter('basket_id',$data['basket_id']);
-
-                /** @var ItemInterface[] $items */
-                $items = unserialize(base64_decode($data['basket_content'],true));
-                foreach ($items as $key => $i){
-                    if ($i->itemId()->id() === $item->itemId()->id()){
-                        $items[$key] = $item;
-                    } else {
-                        $items[] = $item;
-                    }
-                }
+            if (is_array($data)) {
+                $items = unserialize(base64_decode($data['basket_content'], true));
+                $items[$item->itemId()->id()] = $item;
+                $qb->update('basket', 'b')
+                    ->set('basket_content', ':basket_content')
+                    ->set('date_at', ':date_at')
+                    ->where('basket_id = :basket_id')
+                    ->setParameters([
+                        'basket_id' => $data['basket_id'],
+                        'basket_content' => base64_encode(serialize($items)),
+                        'date_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+                    ])->execute();
+            } else {
+                $store[$item->itemId()->id()] = $item;
+                $qb->insert('basket')->values([
+                    'basket_id' => ':basket_id',
+                    'warehouse' => ':warehouse',
+                    'basket_content' => ':basket_content',
+                    'date_at' => ':date_at',
+                ])
+                    ->setParameters([
+                        'basket_id' => Uuid::getFactory()->uuid4(),
+                        'warehouse' => $warehouse->warehouseId(),
+                        'basket_content' => base64_encode(serialize($store)),
+                        'date_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+                    ])->execute();
             }
-            $qb->insert('basket')->values([
-                'basket_id'=>':basket_id',
-                'warehouse'=>':warehouse',
-                'basket_content'=>':basket_content',
-                'date_at'=>':date_at',
-            ])
-            ->setParameters([
-                'basket_id'=>Uuid::getFactory()->uuid4(),
-                'warehouse'=>$warehouse->warehouseId(),
-                'basket_content'=>base64_encode(serialize($items)),
-                'date_at'=>(new \DateTimeImmutable())->format('Y-m-d H:i:s'),
-            ])->execute();
 
             $this->connection->commit();
-        } catch (\Throwable $exception){
+        } catch (\Throwable $exception) {
             $this->connection->rollBack();
+
             throw $exception;
         }
-
     }
 
     public function remove(ItemInterface $item, Warehouse $warehouse): void
     {
         $this->connection->beginTransaction();
+
         try {
             $qb = $this->connection->createQueryBuilder();
             $qb->select([
@@ -93,39 +89,34 @@ final class Database implements WarehouseInterface
                 'b.warehouse',
                 'b.basket_content',
                 'b.date_at',
-            ])->from('basket','b')
+            ])->from('basket', 'b')
                 ->where('b.warehouse = :warehouse')
-                ->setParameter('warehouse',$warehouse->warehouseId());
+                ->setParameter('warehouse', $warehouse->warehouseId());
 
             $data = $qb->execute()->fetch();
+            if (is_array($data)) {
+                /** @var ItemInterface[] $items */
+                $items = unserialize(base64_decode($data['basket_content'], true));
 
-            /** @var ItemInterface[] $items */
-            $items = unserialize(base64_decode($data['basket_content'],true));
-            foreach ($items as $key => $i){
-                if ($i->itemId()->id() === $item->itemId()->id()){
-                    unset($items[$key]);
+                foreach ($items as $key => $i) {
+                    if ($i->itemId()->id() === $item->itemId()->id()) {
+                        unset($items[$key]);
+                    }
                 }
+                $qb->update('basket', 'b')
+                    ->set('basket_content', ':basket_content')
+                    ->set('date_at', ':date_at')
+                    ->where('basket_id = :basket_id')
+                    ->setParameters([
+                        'basket_id' => $data['basket_id'],
+                        'basket_content' => base64_encode(serialize($items)),
+                        'date_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+                    ])->execute();
             }
-            $qb->delete('basket','b')
-                ->where('b.basket_id = :basket_id')
-                ->setParameter('basket_id',$data['basket_id']);
-
-            $qb->insert('basket')->values([
-                'basket_id'=>':basket_id',
-                'warehouse'=>':warehouse',
-                'basket_content'=>':basket_content',
-                'date_at'=>':date_at',
-            ])
-            ->setParameters([
-                'basket_id'=>Uuid::getFactory()->uuid4(),
-                'warehouse'=>$warehouse->warehouseId(),
-                'basket_content'=>base64_encode(serialize($items)),
-                'date_at'=>(new \DateTimeImmutable())->format('Y-m-d H:i:s'),
-            ])->execute();
-
             $this->connection->commit();
-        } catch (\Throwable $exception){
+        } catch (\Throwable $exception) {
             $this->connection->rollBack();
+
             throw $exception;
         }
     }
@@ -133,6 +124,7 @@ final class Database implements WarehouseInterface
     public function getByItemId(ItemId $itemId, Warehouse $warehouse): ItemInterface
     {
         $this->connection->beginTransaction();
+
         try {
             $qb = $this->connection->createQueryBuilder();
             $qb->select([
@@ -140,35 +132,38 @@ final class Database implements WarehouseInterface
                 'b.warehouse',
                 'b.basket_content',
                 'b.date_at',
-            ])->from('basket','b')
+            ])->from('basket', 'b')
                 ->where('b.warehouse = :warehouse')
-                ->setParameter('warehouse',$warehouse->warehouseId());
+                ->setParameter('warehouse', $warehouse->warehouseId());
 
             $data = $qb->execute()->fetch();
             $this->connection->commit();
-        } catch (\Throwable $exception){
+        } catch (\Throwable $exception) {
             $this->connection->rollBack();
+
             throw $exception;
         }
 
         if (!is_array($data)) {
-            throw new WarehouseException(sprintf('Warehouse %s does not exists',  $warehouse->warehouseId()));
+            throw new WarehouseException(sprintf('Warehouse %s does not exists', $warehouse->warehouseId()));
         }
 
-        $items = unserialize(base64_decode($data['basket_content'],true));
-        $item = current(array_filter($items, function (ItemInterface $item) use ($itemId){
+        $items = unserialize(base64_decode($data['basket_content'], true));
+        $item = current(array_filter($items, function (ItemInterface $item) use ($itemId) {
             return $item->itemId()->id() === $itemId->id();
         }));
 
-        if (!$item instanceof ItemInterface){
+        if (!$item instanceof ItemInterface) {
             throw new WarehouseException(sprintf('Item with item id %s not found in warehouse %s', $itemId->id(), $warehouse->warehouseId()));
         }
+
         return $item;
     }
 
     public function findAll(Warehouse $warehouse): array
     {
         $this->connection->beginTransaction();
+
         try {
             $qb = $this->connection->createQueryBuilder();
             $qb->select([
@@ -176,14 +171,15 @@ final class Database implements WarehouseInterface
                 'b.warehouse',
                 'b.basket_content',
                 'b.date_at',
-            ])->from('basket','b')
+            ])->from('basket', 'b')
                 ->where('b.warehouse = :warehouse')
-                ->setParameter('warehouse',$warehouse->warehouseId());
+                ->setParameter('warehouse', $warehouse->warehouseId());
 
             $data = $qb->execute()->fetch();
             $this->connection->commit();
-        } catch (\Throwable $exception){
+        } catch (\Throwable $exception) {
             $this->connection->rollBack();
+
             throw $exception;
         }
 
@@ -191,13 +187,13 @@ final class Database implements WarehouseInterface
             return [];
         }
 
-        $items = unserialize(base64_decode($data['basket_content'],true));
-        return $items;
+        return unserialize(base64_decode($data['basket_content'], true));
     }
 
     public function destroy(Warehouse $warehouse): void
     {
         $this->connection->beginTransaction();
+
         try {
             $qb = $this->connection->createQueryBuilder();
             $qb->select([
@@ -205,23 +201,22 @@ final class Database implements WarehouseInterface
                 'b.warehouse',
                 'b.basket_content',
                 'b.date_at',
-            ])->from('basket','b')
+            ])->from('basket', 'b')
                 ->where('b.warehouse = :warehouse')
-                ->setParameter('warehouse',$warehouse->warehouseId());
+                ->setParameter('warehouse', $warehouse->warehouseId());
 
             $data = $qb->execute()->fetch();
 
-            $qb->delete('basket','b')
-                ->where('b.basket_id = :basket_id')
-                ->setParameter('basket_id',$data['basket_id']);
-
+            $qb->delete('basket')
+                ->where('basket_id = :basket_id')
+                ->setParameter('basket_id', $data['basket_id'])
+                ->execute();
 
             $this->connection->commit();
-        } catch (\Throwable $exception){
+        } catch (\Throwable $exception) {
             $this->connection->rollBack();
+
             throw $exception;
         }
     }
-
-
 }
