@@ -128,28 +128,19 @@ final class Database implements WarehouseInterface
 
     public function getByItemId(ItemId $itemId, Warehouse $warehouse): ItemInterface
     {
-        $this->connection->beginTransaction();
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select([
+            'b.basket_id',
+            'b.warehouse',
+            'b.basket_content',
+            'b.date_at',
+        ])->from('basket', 'b')
+            ->where('b.warehouse = :warehouse')
+            ->setParameter('warehouse', $warehouse->warehouseId());
 
-        try {
-            $qb = $this->connection->createQueryBuilder();
-            $qb->select([
-                'b.basket_id',
-                'b.warehouse',
-                'b.basket_content',
-                'b.date_at',
-            ])->from('basket', 'b')
-                ->where('b.warehouse = :warehouse')
-                ->setParameter('warehouse', $warehouse->warehouseId());
-
-            /** @var Statement $execute */
-            $execute = $qb->execute();
-            $data = $execute->fetch();
-            $this->connection->commit();
-        } catch (\Throwable $exception) {
-            $this->connection->rollBack();
-
-            throw $exception;
-        }
+        /** @var Statement $execute */
+        $execute = $qb->execute();
+        $data = $execute->fetch();
 
         if (!is_array($data)) {
             throw new WarehouseException(sprintf('Warehouse %s does not exists', $warehouse->warehouseId()));
@@ -169,28 +160,19 @@ final class Database implements WarehouseInterface
 
     public function findAll(Warehouse $warehouse): array
     {
-        $this->connection->beginTransaction();
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select([
+            'b.basket_id',
+            'b.warehouse',
+            'b.basket_content',
+            'b.date_at',
+        ])->from('basket', 'b')
+            ->where('b.warehouse = :warehouse')
+            ->setParameter('warehouse', $warehouse->warehouseId());
 
-        try {
-            $qb = $this->connection->createQueryBuilder();
-            $qb->select([
-                'b.basket_id',
-                'b.warehouse',
-                'b.basket_content',
-                'b.date_at',
-            ])->from('basket', 'b')
-                ->where('b.warehouse = :warehouse')
-                ->setParameter('warehouse', $warehouse->warehouseId());
-
-            /** @var Statement $execute */
-            $execute = $qb->execute();
-            $data = $execute->fetch();
-            $this->connection->commit();
-        } catch (\Throwable $exception) {
-            $this->connection->rollBack();
-
-            throw $exception;
-        }
+        /** @var Statement $execute */
+        $execute = $qb->execute();
+        $data = $execute->fetch();
 
         if (!is_array($data)) {
             return [];
