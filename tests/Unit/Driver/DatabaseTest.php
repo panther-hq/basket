@@ -6,7 +6,6 @@ namespace PantherHQ\Basket\Tests\Unit\Driver;
 
 use PantherHQ\Basket\Exception\WarehouseException;
 use PantherHQ\Basket\Item\Item;
-use PantherHQ\Basket\Item\ItemInterface;
 use PantherHQ\Basket\Item\TextItemId;
 use PantherHQ\Basket\Tests\BasketTestCase;
 use PantherHQ\Basket\Warehouse;
@@ -45,9 +44,6 @@ final class DatabaseTest extends BasketTestCase
             1,
             9.99
         ), $warehouse);
-
-        Assert::assertInstanceOf(ItemInterface::class, $basket->getByItemId($itemId, $warehouse));
-
         $basket->remove($item, $warehouse);
 
         $this->expectException(WarehouseException::class);

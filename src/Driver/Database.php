@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PantherHQ\Basket\Driver;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Statement;
 use PantherHQ\Basket\Exception\WarehouseException;
 use PantherHQ\Basket\Item\ItemId;
 use PantherHQ\Basket\Item\ItemInterface;
@@ -39,11 +40,12 @@ final class Database implements WarehouseInterface
             ])->from('basket', 'b')
                 ->where('b.warehouse = :warehouse')
                 ->setParameter('warehouse', $warehouse->warehouseId());
-
-            $data = $qb->execute()->fetch();
+            /** @var Statement $execute */
+            $execute = $qb->execute();
+            $data = $execute->fetch();
 
             if (is_array($data)) {
-                $items = unserialize(base64_decode($data['basket_content'], true));
+                $items = unserialize((string) base64_decode($data['basket_content'], true));
                 $items[$item->itemId()->id()] = $item;
                 $qb->update('basket', 'b')
                     ->set('basket_content', ':basket_content')
@@ -55,6 +57,7 @@ final class Database implements WarehouseInterface
                         'date_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
                     ])->execute();
             } else {
+                $store = [];
                 $store[$item->itemId()->id()] = $item;
                 $qb->insert('basket')->values([
                     'basket_id' => ':basket_id',
@@ -93,10 +96,12 @@ final class Database implements WarehouseInterface
                 ->where('b.warehouse = :warehouse')
                 ->setParameter('warehouse', $warehouse->warehouseId());
 
-            $data = $qb->execute()->fetch();
+            /** @var Statement $execute */
+            $execute = $qb->execute();
+            $data = $execute->fetch();
             if (is_array($data)) {
                 /** @var ItemInterface[] $items */
-                $items = unserialize(base64_decode($data['basket_content'], true));
+                $items = unserialize((string) base64_decode($data['basket_content'], true));
 
                 foreach ($items as $key => $i) {
                     if ($i->itemId()->id() === $item->itemId()->id()) {
@@ -136,7 +141,9 @@ final class Database implements WarehouseInterface
                 ->where('b.warehouse = :warehouse')
                 ->setParameter('warehouse', $warehouse->warehouseId());
 
-            $data = $qb->execute()->fetch();
+            /** @var Statement $execute */
+            $execute = $qb->execute();
+            $data = $execute->fetch();
             $this->connection->commit();
         } catch (\Throwable $exception) {
             $this->connection->rollBack();
@@ -148,7 +155,7 @@ final class Database implements WarehouseInterface
             throw new WarehouseException(sprintf('Warehouse %s does not exists', $warehouse->warehouseId()));
         }
 
-        $items = unserialize(base64_decode($data['basket_content'], true));
+        $items = unserialize((string) base64_decode($data['basket_content'], true));
         $item = current(array_filter($items, function (ItemInterface $item) use ($itemId) {
             return $item->itemId()->id() === $itemId->id();
         }));
@@ -175,7 +182,9 @@ final class Database implements WarehouseInterface
                 ->where('b.warehouse = :warehouse')
                 ->setParameter('warehouse', $warehouse->warehouseId());
 
-            $data = $qb->execute()->fetch();
+            /** @var Statement $execute */
+            $execute = $qb->execute();
+            $data = $execute->fetch();
             $this->connection->commit();
         } catch (\Throwable $exception) {
             $this->connection->rollBack();
@@ -187,7 +196,7 @@ final class Database implements WarehouseInterface
             return [];
         }
 
-        return unserialize(base64_decode($data['basket_content'], true));
+        return unserialize((string) base64_decode($data['basket_content'], true));
     }
 
     public function destroy(Warehouse $warehouse): void
@@ -205,8 +214,9 @@ final class Database implements WarehouseInterface
                 ->where('b.warehouse = :warehouse')
                 ->setParameter('warehouse', $warehouse->warehouseId());
 
-            $data = $qb->execute()->fetch();
-
+            /** @var Statement $execute */
+            $execute = $qb->execute();
+            $data = $execute->fetch();
             $qb->delete('basket')
                 ->where('basket_id = :basket_id')
                 ->setParameter('basket_id', $data['basket_id'])
