@@ -16,11 +16,6 @@ use Ramsey\Uuid\Uuid;
 final class Database implements WarehouseInterface
 {
     /**
-     * @var ItemInterface[]
-     */
-    private $items = [];
-
-    /**
      * @var Connection
      */
     private $connection;
@@ -174,38 +169,34 @@ final class Database implements WarehouseInterface
 
     public function findAll(Warehouse $warehouse): array
     {
-        if (count($this->items) === 0) {
-            $this->connection->beginTransaction();
+        $this->connection->beginTransaction();
 
-            try {
-                $qb = $this->connection->createQueryBuilder();
-                $qb->select([
-                    'b.basket_id',
-                    'b.warehouse',
-                    'b.basket_content',
-                    'b.date_at',
-                ])->from('basket', 'b')
-                    ->where('b.warehouse = :warehouse')
-                    ->setParameter('warehouse', $warehouse->warehouseId());
+        try {
+            $qb = $this->connection->createQueryBuilder();
+            $qb->select([
+                'b.basket_id',
+                'b.warehouse',
+                'b.basket_content',
+                'b.date_at',
+            ])->from('basket', 'b')
+                ->where('b.warehouse = :warehouse')
+                ->setParameter('warehouse', $warehouse->warehouseId());
 
-                /** @var Statement $execute */
-                $execute = $qb->execute();
-                $data = $execute->fetch();
-                $this->connection->commit();
-            } catch (\Throwable $exception) {
-                $this->connection->rollBack();
+            /** @var Statement $execute */
+            $execute = $qb->execute();
+            $data = $execute->fetch();
+            $this->connection->commit();
+        } catch (\Throwable $exception) {
+            $this->connection->rollBack();
 
-                throw $exception;
-            }
-
-            if (!is_array($data)) {
-                return [];
-            }
-
-            $this->items = unserialize((string) base64_decode($data['basket_content'], true));
+            throw $exception;
         }
 
-        return $this->items;
+        if (!is_array($data)) {
+            return [];
+        }
+
+        return unserialize((string) base64_decode($data['basket_content'], true));
     }
 
     public function destroy(Warehouse $warehouse): void

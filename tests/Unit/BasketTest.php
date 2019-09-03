@@ -162,40 +162,6 @@ final class BasketTest extends BasketTestCase
         Assert::assertFalse($session->has('basket'));
     }
 
-    public function testTotalOnBasket(): void
-    {
-        $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
-        $warehouseInterface = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
-        $items = [];
-        for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
-        }
-        $basket->add($items);
-
-        $total = array_sum(array_map(function (Item $item): float {
-            return $item->quantity() * $item->price();
-        }, $items));
-        Assert::assertSame($basket->total(), $total);
-    }
-
-    public function testCountOnBasket(): void
-    {
-        $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
-        $warehouseInterface = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
-        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
-        $items = [];
-        for ($i = 0; $i < 4; $i++) {
-            $items[] = new Item(new TextItemId(Uuid::uuid4()->toString()), $this->faker()->title, random_int(1, 10), random_int(1, 100));
-        }
-        $basket->add($items);
-
-        $count = (int) array_sum(array_map(function (Item $item): float {
-            return $item->quantity();
-        }, $items));
-        Assert::assertSame($basket->count(), $count);
-    }
-
     public function testMergeWarehouse(): void
     {
         $warehousePath = getcwd().DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'var';
