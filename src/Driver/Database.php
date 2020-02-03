@@ -46,7 +46,11 @@ final class Database implements WarehouseInterface
 
             if (is_array($data)) {
                 $items = unserialize((string) base64_decode($data['basket_content'], true));
-                $items[$item->itemId()->id()] = $item;
+                $name = $item->itemId()->id();
+                if ($item->hasAttribute() && $item->attribute()->hasPromotion()) {
+                    $name = sprintf('%s_%s', $item->itemId()->id(), $item->attribute()->promotion());
+                }
+                $items[$name] = $item;
                 $qb->update('basket', 'b')
                     ->set('basket_content', ':basket_content')
                     ->set('date_at', ':date_at')
@@ -58,7 +62,11 @@ final class Database implements WarehouseInterface
                     ])->execute();
             } else {
                 $store = [];
-                $store[$item->itemId()->id()] = $item;
+                $name = $item->itemId()->id();
+                if ($item->hasAttribute() && $item->attribute()->hasPromotion()) {
+                    $name = sprintf('%s_%s', $item->itemId()->id(), $item->attribute()->promotion());
+                }
+                $store[$name] = $item;
                 $qb->insert('basket')->values([
                     'basket_id' => ':basket_id',
                     'warehouse' => ':warehouse',

@@ -28,6 +28,11 @@ final class Item implements ItemInterface
      */
     private $price;
 
+    /**
+     * @var Attribute
+     */
+    private $attribute;
+
     public function __construct(ItemId $itemId, string $name, int $quantity, float $price)
     {
         if ($quantity <= 0) {
@@ -67,5 +72,20 @@ final class Item implements ItemInterface
     public function total(): float
     {
         return $this->quantity * $this->price;
+    }
+
+    public function attribute(): Attribute
+    {
+        return $this->attribute;
+    }
+
+    public function setAttribute(Attribute $attribute): void
+    {
+        $this->attribute = $attribute;
+    }
+
+    public function hasAttribute(): bool
+    {
+        return $this->attribute !== null;
     }
 }

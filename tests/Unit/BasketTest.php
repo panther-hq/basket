@@ -6,7 +6,9 @@ namespace PantherHQ\Basket\Tests\Unit;
 
 use Faker\Factory;
 use League\Flysystem\Filesystem;
+use PantherHQ\Basket\Item\Attribute;
 use PantherHQ\Basket\Item\Item;
+use PantherHQ\Basket\Item\NumericItemId;
 use PantherHQ\Basket\Item\TextItemId;
 use PantherHQ\Basket\Tests\BasketTestCase;
 use PantherHQ\Basket\Warehouse;
@@ -261,5 +263,26 @@ final class BasketTest extends BasketTestCase
         }
 
         Assert::assertCount(count($basketAuth->findAll()), $itemsWarehouse);
+    }
+
+    public function testAddTwoSameItemsButOneIsPromotionToBasket(): void
+    {
+        $warehouseInterface = new \PantherHQ\Basket\Driver\Database($this->connection);
+
+        $basket = new \PantherHQ\Basket\Basket($warehouseInterface, $session = new Session(new MockArraySessionStorage()), 'basket');
+
+        $items = [];
+        $name = $this->faker()->title;
+        $items[] = new Item(new NumericItemId(1), $name, 1, 10);
+
+        $attribute = new Attribute();
+        $attribute->setPromotion('promotion_1');
+        $item = new Item(new NumericItemId(1), $name, 1, 5);
+        $item->setAttribute($attribute);
+        $items[] = $item;
+
+        $basket->add($items);
+        Assert::assertContains($items, $session->get('basket'));
+        Assert::assertCount(count($items), current($session->get('basket')));
     }
 }

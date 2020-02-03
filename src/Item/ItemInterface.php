@@ -15,4 +15,10 @@ interface ItemInterface
     public function price(): float;
 
     public function total(): float;
+
+    public function attribute(): Attribute;
+
+    public function setAttribute(Attribute $attribute): void;
+
+    public function hasAttribute(): bool;
 }
