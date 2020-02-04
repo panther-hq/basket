@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PantherHQ\Basket\Tests\Unit\Driver;
 
 use PantherHQ\Basket\Exception\WarehouseException;
+use PantherHQ\Basket\Item\Attribute;
 use PantherHQ\Basket\Item\Item;
 use PantherHQ\Basket\Item\TextItemId;
 use PantherHQ\Basket\Tests\BasketTestCase;
@@ -88,11 +89,16 @@ final class DatabaseTest extends BasketTestCase
             1,
             9.99
         );
+        $promoAttribute = new Attribute();
+        $promoAttribute->setPromotion('test_attribute');
+        $item2->setAttribute($promoAttribute);
+
         $basket->add($item, $warehouse);
         $basket->add($item2, $warehouse);
 
         $items = $basket->findAll($warehouse);
         Assert::assertCount(2, $basket->findAll($warehouse));
+
         /** @var Item $basketItem */
         foreach ($items as $basketItem) {
             Assert::assertSame($item->itemId()->id(), $basketItem->itemId()->id());
