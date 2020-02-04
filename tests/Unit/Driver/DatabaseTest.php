@@ -75,15 +75,24 @@ final class DatabaseTest extends BasketTestCase
         $warehouse->setWarehouseId('02d040a2-bdee-4767-858e-e8d333f6a671');
 
         $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
-        $basket->add($item = new Item(
+        $item =
+            new Item(
+                $itemId = new TextItemId('827fd18e-5672-429c-9147-1a16ff6696bf'),
+                $this->faker()->title,
+                1,
+                9.99
+            );
+        $item2 =new Item(
             $itemId = new TextItemId('827fd18e-5672-429c-9147-1a16ff6696bf'),
             $this->faker()->title,
             1,
             9.99
-        ), $warehouse);
+        );
+        $basket->add($item, $warehouse);
+        $basket->add($item2);
 
         $items = $basket->findAll($warehouse);
-
+        Assert::assertCount(2, $basket->findAll());
         /** @var Item $basketItem */
         foreach ($items as $basketItem) {
             Assert::assertSame($item->itemId()->id(), $basketItem->itemId()->id());
@@ -110,4 +119,5 @@ final class DatabaseTest extends BasketTestCase
         $this->expectException(WarehouseException::class);
         $basket->getByItemId($itemId, $warehouse);
     }
+
 }
