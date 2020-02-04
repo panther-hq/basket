@@ -89,10 +89,10 @@ final class DatabaseTest extends BasketTestCase
             9.99
         );
         $basket->add($item, $warehouse);
-        $basket->add($item2);
+        $basket->add($item2, $warehouse);
 
         $items = $basket->findAll($warehouse);
-        Assert::assertCount(2, $basket->findAll());
+        Assert::assertCount(2, $basket->findAll($warehouse));
         /** @var Item $basketItem */
         foreach ($items as $basketItem) {
             Assert::assertSame($item->itemId()->id(), $basketItem->itemId()->id());
