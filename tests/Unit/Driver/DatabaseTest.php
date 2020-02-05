@@ -71,7 +71,7 @@ final class DatabaseTest extends BasketTestCase
         $savedItem = $basket->getByItemId($itemId, $warehouse);
         Assert::assertSame($savedItem->name(), $title);
         Assert::assertSame($savedItem->price(), $price);
-        // this quantity is 3, should be 3 the item should have been merged cause it's the same freaking ID.
+        // $savedItem->quantity() = 1, should be 3 the item should have been merged cause it's the same freaking ID.
         Assert::assertSame($quantity + $quantityAgain, $savedItem->quantity());
     }
 
