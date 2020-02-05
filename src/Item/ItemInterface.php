@@ -8,6 +8,8 @@ interface ItemInterface
 {
     public function itemId(): ItemId;
 
+    public function productId(): ProductId;
+
     public function name(): string;
 
     public function quantity(): int;

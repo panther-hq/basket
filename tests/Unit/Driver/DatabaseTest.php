@@ -8,6 +8,7 @@ use PantherHQ\Basket\Exception\WarehouseException;
 use PantherHQ\Basket\Item\Attribute;
 use PantherHQ\Basket\Item\Item;
 use PantherHQ\Basket\Item\TextItemId;
+use PantherHQ\Basket\Item\NumericProductId as ProductId;
 use PantherHQ\Basket\Tests\BasketTestCase;
 use PantherHQ\Basket\Warehouse;
 use PHPUnit\Framework\Assert;
@@ -22,6 +23,7 @@ final class DatabaseTest extends BasketTestCase
         $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
         $basket->add(new Item(
             $itemId = new TextItemId($id = 'c06a00d2-4df5-446e-b1a9-6b7528640b27'),
+            $productId = new ProductId($productId = 1111),
             $title = $this->faker()->title,
             $quantity = 1,
             $price = 9.99
@@ -41,6 +43,7 @@ final class DatabaseTest extends BasketTestCase
         $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
         $basket->add($item = new Item(
             $itemId = new TextItemId($id = '77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
             9.99
@@ -59,6 +62,7 @@ final class DatabaseTest extends BasketTestCase
         $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
         $basket->add($item = new Item(
             $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
             9.99
@@ -79,12 +83,14 @@ final class DatabaseTest extends BasketTestCase
         $item =
             new Item(
                 $itemId = new TextItemId('827fd18e-5672-429c-9147-1a16ff6696bf'),
+                $productId = new ProductId($productId = 1111),
                 $this->faker()->title,
                 1,
                 9.99
             );
         $item2 =new Item(
             $itemId = new TextItemId('827fd18e-5672-429c-9147-1a16ff6696bf'),
+            $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
             9.99
@@ -115,6 +121,7 @@ final class DatabaseTest extends BasketTestCase
         $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
         $basket->add(new Item(
             $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
             9.99

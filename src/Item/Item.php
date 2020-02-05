@@ -14,6 +14,11 @@ final class Item implements ItemInterface
     private $itemId;
 
     /**
+     * @var ProductId
+     */
+    private $productId;
+
+    /**
      * @var string
      */
     private $name;
@@ -33,7 +38,7 @@ final class Item implements ItemInterface
      */
     private $attribute;
 
-    public function __construct(ItemId $itemId, string $name, int $quantity, float $price)
+    public function __construct(ItemId $itemId, ProductId $productId, string $name, int $quantity, float $price)
     {
         if ($quantity <= 0) {
             throw new ItemException(sprintf('quantity for item with id %s can not be %s', $itemId->id(), $quantity));
@@ -44,6 +49,7 @@ final class Item implements ItemInterface
         }
 
         $this->itemId = $itemId;
+        $this->productId = $productId;
         $this->name = $name;
         $this->quantity = $quantity;
         $this->price = $price;
@@ -52,6 +58,11 @@ final class Item implements ItemInterface
     public function itemId(): ItemId
     {
         return $this->itemId;
+    }
+
+    public function productId(): ProductId
+    {
+        return $this->productId;
     }
 
     public function name(): string

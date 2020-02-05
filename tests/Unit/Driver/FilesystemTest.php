@@ -7,6 +7,7 @@ namespace PantherHQ\Basket\Tests\Unit\Driver;
 use League\Flysystem\Filesystem;
 use PantherHQ\Basket\Item\Item;
 use PantherHQ\Basket\Item\TextItemId;
+use PantherHQ\Basket\Item\NumericProductId as ProductId;
 use PantherHQ\Basket\Tests\BasketTestCase;
 use PantherHQ\Basket\Warehouse;
 use PHPUnit\Framework\Assert;
@@ -22,6 +23,7 @@ final class FilesystemTest extends BasketTestCase
         $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add(new Item(
             new TextItemId($id = 'c06a00d2-4df5-446e-b1a9-6b7528640b27'),
+            $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
             9.99
@@ -39,6 +41,7 @@ final class FilesystemTest extends BasketTestCase
         $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add($item = new Item(
             new TextItemId($id = '77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
             9.99
@@ -60,6 +63,7 @@ final class FilesystemTest extends BasketTestCase
         $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add($item = new Item(
             $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
             9.99
@@ -80,6 +84,7 @@ final class FilesystemTest extends BasketTestCase
         $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add($item = new Item(
             $itemId = new TextItemId('827fd18e-5672-429c-9147-1a16ff6696bf'),
+            $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
             9.99
@@ -104,6 +109,7 @@ final class FilesystemTest extends BasketTestCase
         $basket = new \PantherHQ\Basket\Driver\Filesystem(new Filesystem(new \League\Flysystem\Adapter\Local($warehousePath)));
         $basket->add(new Item(
             $itemId = new TextItemId('77ac8983-42f7-4cec-960a-f636b92abb06'),
+            $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
             9.99
