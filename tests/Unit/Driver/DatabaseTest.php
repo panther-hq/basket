@@ -35,6 +35,46 @@ final class DatabaseTest extends BasketTestCase
         Assert::assertSame($item->quantity(), $quantity);
     }
 
+
+    /**
+     * This tests fails because the
+     *
+     *
+     * @throws WarehouseException
+     * @throws \PantherHQ\Basket\Exception\ItemException
+     * @throws \Throwable
+     */
+    public function testAddItemAndThenAddAgainToWarehouse(): void
+    {
+        $warehouse = new Warehouse();
+        $warehouse->setWarehouseId('abf8c0a1-c89c-4fde-8087-da87d99754bb');
+
+        $basket = new \PantherHQ\Basket\Driver\Database($this->connection);
+        $item = new Item(
+                $itemId = new TextItemId($id = 'c06a00d2-4df5-446e-b1a9-6b7528640b27'),
+                $productId = new ProductId($productId = 1111),
+                $title = $this->faker()->title,
+                $quantity = 1,
+                $price = 9.99
+        );
+        $basket->add($item, $warehouse);
+        $itemAgain = new Item(
+                $itemId = new TextItemId($id = 'c06a00d2-4df5-446e-b1a9-6b7528640b27'),
+                $productId = new ProductId($productId = 1111),
+                $title,
+                $quantityAgain = 2,
+                $price = 9.99
+        );
+        $basket->add($item, $warehouse);
+
+
+        $savedItem = $basket->getByItemId($itemId, $warehouse);
+        Assert::assertSame($savedItem->name(), $title);
+        Assert::assertSame($savedItem->price(), $price);
+        // this quantity is 3, should be 3 the item should have been merged cause it's the same freaking ID.
+        Assert::assertSame($quantity + $quantityAgain, $savedItem->quantity());
+    }
+
     public function testRemoveItemFromWarehouse(): void
     {
         $warehouse = new Warehouse();
