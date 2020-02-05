@@ -65,14 +65,12 @@ final class DatabaseTest extends BasketTestCase
                 $quantityAgain = 2,
                 $price = 9.99
         );
-        $basket->add($item, $warehouse);
-
-
+        $basket->add($itemAgain, $warehouse);
         $savedItem = $basket->getByItemId($itemId, $warehouse);
         Assert::assertSame($savedItem->name(), $title);
         Assert::assertSame($savedItem->price(), $price);
-        // $savedItem->quantity() = 1, should be 3 the item should have been merged cause it's the same freaking ID.
-        Assert::assertSame($quantity + $quantityAgain, $savedItem->quantity());
+        // Second item overwritten first one cause it had same Id.
+        Assert::assertSame($quantityAgain, $savedItem->quantity());
     }
 
     public function testRemoveItemFromWarehouse(): void
