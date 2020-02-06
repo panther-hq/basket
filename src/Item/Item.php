@@ -60,6 +60,10 @@ final class Item implements ItemInterface
         return $this->itemId;
     }
 
+    public function setItemId(ItemId $itemId) {
+        $this->itemId = $itemId;
+    }
+
     public function productId(): ProductId
     {
         return $this->productId;
@@ -75,9 +79,19 @@ final class Item implements ItemInterface
         return $this->quantity;
     }
 
+    public function setQuantity(int $quantity): void
+    {
+        $this->quantity = $quantity;
+    }
+
     public function price(): float
     {
         return $this->price;
+    }
+
+    public function setPrice(float $price): void
+    {
+        $this->price = $price;
     }
 
     public function total(): float
@@ -90,13 +104,25 @@ final class Item implements ItemInterface
         return $this->attribute;
     }
 
-    public function setAttribute(Attribute $attribute): void
+    public function setAttribute(?Attribute $attribute): void
     {
         $this->attribute = $attribute;
     }
 
     public function hasAttribute(): bool
     {
-        return $this->attribute !== null;
+        return null !== $this->attribute;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'item' => $this,
+            'itemId' => $this->itemId()->id(),
+            'productId' => $this->productId()->id(),
+            'name' => $this->name(),
+            'qty' => $this->quantity(),
+            'price' => $this->price(),
+        ];
     }
 }

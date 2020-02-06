@@ -20,7 +20,10 @@ interface ItemInterface
 
     public function attribute(): Attribute;
 
-    public function setAttribute(Attribute $attribute): void;
+    public function setAttribute(?Attribute $attribute): void;
 
     public function hasAttribute(): bool;
+
+    public function toArray();
+
 }
