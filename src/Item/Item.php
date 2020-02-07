@@ -38,7 +38,12 @@ final class Item implements ItemInterface
      */
     private $attribute;
 
-    public function __construct(ItemId $itemId, ProductId $productId, string $name, int $quantity, float $price)
+    /**
+     * @var \DateTimeImmutable
+     */
+    private $addedAt;
+
+    public function __construct(ItemId $itemId, ProductId $productId, string $name, int $quantity, float $price, ?\DateTimeImmutable $addedAt)
     {
         if ($quantity <= 0) {
             throw new ItemException(sprintf('quantity for item with id %s can not be %s', $itemId->id(), $quantity));
@@ -53,6 +58,13 @@ final class Item implements ItemInterface
         $this->name = $name;
         $this->quantity = $quantity;
         $this->price = $price;
+        if($addedAt !== null) {
+            $this->addedAt = $addedAt;
+        } else {
+            $this->addedAt = new \DateTimeImmutable('now');
+        }
+
+
     }
 
     public function itemId(): ItemId
@@ -60,7 +72,8 @@ final class Item implements ItemInterface
         return $this->itemId;
     }
 
-    public function setItemId(ItemId $itemId) {
+    public function setItemId(ItemId $itemId): void
+    {
         $this->itemId = $itemId;
     }
 
@@ -97,6 +110,16 @@ final class Item implements ItemInterface
     public function total(): float
     {
         return $this->quantity * $this->price;
+    }
+
+    public function addedAt(): \DateTimeImmutable
+    {
+        return $this->addedAt;
+    }
+
+    public function setAddedAt(\DateTimeImmutable $addedAt): void
+    {
+        $this->addedAt = $addedAt;
     }
 
     public function attribute(): Attribute

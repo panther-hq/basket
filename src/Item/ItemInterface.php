@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PantherHQ\Basket\Item;
 
+use Shop\Application\Exception\RuntimeException;
+
 interface ItemInterface
 {
     public function itemId(): ItemId;
@@ -17,6 +19,10 @@ interface ItemInterface
     public function price(): float;
 
     public function total(): float;
+
+    public function addedAt(): \DateTimeImmutable;
+
+    public function setAddedAt(\DateTimeImmutable $addedAt): void;
 
     public function attribute(): Attribute;
 
