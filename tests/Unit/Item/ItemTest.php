@@ -18,7 +18,8 @@ final class ItemTest extends BasketTestCase {
                          new NumericProductId($productId = 1111),
                          $this->faker()->title,
                          1,
-                         9.99
+                         9.99,
+                        new \DateTimeImmutable('now')
         );
 
         Assert::assertSame(1, $item->itemId()->id());
@@ -32,7 +33,8 @@ final class ItemTest extends BasketTestCase {
                 new NumericProductId($productId = 1111),
                 $this->faker()->title,
                 1,
-                9.99
+                9.99,
+                new \DateTimeImmutable('now')
         );
 
         Assert::assertSame('3009062a-6679-4d17-a51c-507679f24e8b', $item->itemId()->id());
@@ -47,7 +49,8 @@ final class ItemTest extends BasketTestCase {
                 new NumericProductId($productId = 1111),
                 $this->faker()->title,
                 0,
-                9.99
+                9.99,
+                new \DateTimeImmutable('now')
         );
     }
 
@@ -58,7 +61,8 @@ final class ItemTest extends BasketTestCase {
                 new NumericProductId($productId = 1111),
                 $this->faker()->title,
                 1,
-                0.00
+                0.00,
+                new \DateTimeImmutable('now')
         );
     }
 }

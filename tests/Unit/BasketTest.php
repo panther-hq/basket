@@ -36,7 +36,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId(123123),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
 
@@ -58,7 +59,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId(111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
 
@@ -85,7 +87,8 @@ final class BasketTest extends BasketTestCase {
                                 $productId = new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
 
@@ -98,7 +101,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $itemsWarehouse = array_merge($itemsWarehouse, $items);
@@ -127,7 +131,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $itemsWarehouse = $items;
@@ -139,7 +144,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
 
@@ -168,7 +174,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $basket->add($items);
@@ -195,7 +202,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $basket->add($items);
@@ -225,7 +233,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $basket->add($items);
@@ -253,7 +262,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $basket->add($items);
@@ -283,7 +293,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $basket->add($items);
@@ -315,7 +326,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $itemsWarehouseGuest = $items;
@@ -333,7 +345,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $itemsWarehouseAuth = $items;
@@ -363,7 +376,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $itemsWarehouseGuest = $items;
@@ -381,7 +395,8 @@ final class BasketTest extends BasketTestCase {
                                 new NumericProductId($productId = 1111),
                                 $this->faker()->title,
                                 random_int(1, 10),
-                                random_int(1, 100)
+                                random_int(1, 100),
+                                new \DateTimeImmutable('now')
             );
         }
         $itemsWarehouseAuth = $items;
@@ -412,7 +427,8 @@ final class BasketTest extends BasketTestCase {
                 new NumericProductId($productId = 1111),
                 $name,
                 1,
-                10
+                10,
+                new \DateTimeImmutable('now')
         );
 
         $attribute = new Attribute();
@@ -422,7 +438,8 @@ final class BasketTest extends BasketTestCase {
                 new NumericProductId($productId = 1111),
                 $name,
                 1,
-                5
+                5,
+                new \DateTimeImmutable('now')
         );
         $item->setAttribute($attribute);
         $items[] = $item;

@@ -21,8 +21,8 @@ class BasketTestCase extends TestCase
     {
         $this->connection = DriverManager::getConnection([
             'dbname' => 'basket',
-            'user' => 'root',
-            'password' => 'root',
+            'user' => 'phpstorm',
+            'password' => 'phpstorm',
             'host' => '127.0.0.1',
             'driver' => 'pdo_mysql',
             'port' => 3306,
