@@ -82,6 +82,14 @@ final class Item implements ItemInterface
         return $this->productId;
     }
 
+    public function hasProductId(): bool {
+        return null !== $this->productId;
+    }
+
+    public function setProductId(ProductId $productId): void {
+        $this->productId = $productId;
+    }
+
     public function name(): string
     {
         return $this->name;

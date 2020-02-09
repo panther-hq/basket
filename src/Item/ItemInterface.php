@@ -12,6 +12,8 @@ interface ItemInterface
 
     public function productId(): ProductId;
 
+    public function hasProductId(): bool;
+
     public function name(): string;
 
     public function quantity(): int;
@@ -31,5 +33,8 @@ interface ItemInterface
     public function hasAttribute(): bool;
 
     public function toArray();
+
+    // Only for adding so we don't break logged in user carts
+    public function setProductId(ProductId $productId);
 
 }
