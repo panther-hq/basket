@@ -39,7 +39,7 @@ final class Item implements ItemInterface
     private $attribute;
 
     /**
-     * @var \DateTimeImmutable
+     * @var \DateTimeImmutable|null
      */
     private $addedAt;
 
@@ -118,6 +118,11 @@ final class Item implements ItemInterface
     public function total(): float
     {
         return $this->quantity * $this->price;
+    }
+
+    public function hasAddedAt(): bool
+    {
+        return null !== $this->addedAt;
     }
 
     public function addedAt(): \DateTimeImmutable
