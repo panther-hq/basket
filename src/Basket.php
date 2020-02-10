@@ -40,7 +40,8 @@ final class Basket implements BasketInterface
         WarehouseInterface $warehouseInterface,
         SessionInterface $session,
         string $sessionKey
-    ) {
+    )
+    {
         $this->warehouseInterface = $warehouseInterface;
         $this->session = $session;
         $this->sessionKey = $sessionKey;
@@ -69,13 +70,15 @@ final class Basket implements BasketInterface
     public function add(array $items): void
     {
         $warehouse = $this->loadWarehouse();
-        $this->items = array_merge($this->findAll(), array_map(function (ItemInterface $item) use ($warehouse): ItemInterface {
-            $this->warehouseInterface->add($item, $warehouse);
+        $this->items = array_merge($this->findAll(),
+            array_map(function (ItemInterface $item) use ($warehouse): ItemInterface {
+                $this->warehouseInterface->add($item, $warehouse);
 
-            return $item;
-        }, $items));
+                return $item;
+            }, $items));
 
         $this->save($warehouse);
+
     }
 
     /**
@@ -158,4 +161,5 @@ final class Basket implements BasketInterface
     {
         $this->session->set($this->sessionKey, [$warehouse->warehouseId() => $this->items]);
     }
+
 }

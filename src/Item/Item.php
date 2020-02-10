@@ -14,6 +14,11 @@ final class Item implements ItemInterface
     private $itemId;
 
     /**
+     * @var ProductId
+     */
+    private $productId;
+
+    /**
      * @var string
      */
     private $name;
@@ -33,7 +38,12 @@ final class Item implements ItemInterface
      */
     private $attribute;
 
-    public function __construct(ItemId $itemId, string $name, int $quantity, float $price)
+    /**
+     * @var \DateTimeImmutable
+     */
+    private $addedAt;
+
+    public function __construct(ItemId $itemId, ProductId $productId, string $name, int $quantity, float $price, ?\DateTimeImmutable $addedAt)
     {
         if ($quantity <= 0) {
             throw new ItemException(sprintf('quantity for item with id %s can not be %s', $itemId->id(), $quantity));
@@ -44,14 +54,40 @@ final class Item implements ItemInterface
         }
 
         $this->itemId = $itemId;
+        $this->productId = $productId;
         $this->name = $name;
         $this->quantity = $quantity;
         $this->price = $price;
+        if($addedAt !== null) {
+            $this->addedAt = $addedAt;
+        } else {
+            $this->addedAt = new \DateTimeImmutable('now');
+        }
+
+
     }
 
     public function itemId(): ItemId
     {
         return $this->itemId;
+    }
+
+    public function setItemId(ItemId $itemId): void
+    {
+        $this->itemId = $itemId;
+    }
+
+    public function productId(): ProductId
+    {
+        return $this->productId;
+    }
+
+    public function hasProductId(): bool {
+        return null !== $this->productId;
+    }
+
+    public function setProductId(ProductId $productId): void {
+        $this->productId = $productId;
     }
 
     public function name(): string
@@ -64,9 +100,19 @@ final class Item implements ItemInterface
         return $this->quantity;
     }
 
+    public function setQuantity(int $quantity): void
+    {
+        $this->quantity = $quantity;
+    }
+
     public function price(): float
     {
         return $this->price;
+    }
+
+    public function setPrice(float $price): void
+    {
+        $this->price = $price;
     }
 
     public function total(): float
@@ -74,18 +120,40 @@ final class Item implements ItemInterface
         return $this->quantity * $this->price;
     }
 
+    public function addedAt(): \DateTimeImmutable
+    {
+        return $this->addedAt;
+    }
+
+    public function setAddedAt(\DateTimeImmutable $addedAt): void
+    {
+        $this->addedAt = $addedAt;
+    }
+
     public function attribute(): Attribute
     {
         return $this->attribute;
     }
 
-    public function setAttribute(Attribute $attribute): void
+    public function setAttribute(?Attribute $attribute): void
     {
         $this->attribute = $attribute;
     }
 
     public function hasAttribute(): bool
     {
-        return $this->attribute !== null;
+        return null !== $this->attribute;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'item' => $this,
+            'itemId' => $this->itemId()->id(),
+            'productId' => $this->productId()->id(),
+            'name' => $this->name(),
+            'qty' => $this->quantity(),
+            'price' => $this->price(),
+        ];
     }
 }
