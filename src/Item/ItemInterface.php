@@ -22,7 +22,9 @@ interface ItemInterface
 
     public function total(): float;
 
-    public function addedAt(): \DateTimeImmutable;
+    public function hasAddedAt(): bool;
+
+    public function addedAt(): ?\DateTimeImmutable;
 
     public function setAddedAt(\DateTimeImmutable $addedAt): void;
 
