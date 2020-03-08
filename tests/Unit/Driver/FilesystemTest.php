@@ -6,8 +6,8 @@ namespace PantherHQ\Basket\Tests\Unit\Driver;
 
 use League\Flysystem\Filesystem;
 use PantherHQ\Basket\Item\Item;
-use PantherHQ\Basket\Item\TextItemId;
 use PantherHQ\Basket\Item\NumericProductId as ProductId;
+use PantherHQ\Basket\Item\TextItemId;
 use PantherHQ\Basket\Tests\BasketTestCase;
 use PantherHQ\Basket\Warehouse;
 use PHPUnit\Framework\Assert;
@@ -26,7 +26,8 @@ final class FilesystemTest extends BasketTestCase
             $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
-            9.99, new \DateTimeImmutable('now')
+            9.99,
+            new \DateTimeImmutable('now')
         ), $warehouse);
 
         Assert::assertTrue(file_exists($warehousePath.DIRECTORY_SEPARATOR.$warehouse->warehouseId().DIRECTORY_SEPARATOR.$id));
@@ -44,7 +45,8 @@ final class FilesystemTest extends BasketTestCase
             $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
-            9.99, new \DateTimeImmutable('now')
+            9.99,
+            new \DateTimeImmutable('now')
         ), $warehouse);
 
         Assert::assertTrue(file_exists($warehousePath.DIRECTORY_SEPARATOR.$warehouse->warehouseId().DIRECTORY_SEPARATOR.$id));
@@ -66,7 +68,8 @@ final class FilesystemTest extends BasketTestCase
             $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
-            9.99, new \DateTimeImmutable('now')
+            9.99,
+            new \DateTimeImmutable('now')
         ), $warehouse);
 
         $basketItem = $basket->getByItemId($itemId, $warehouse);
@@ -87,7 +90,8 @@ final class FilesystemTest extends BasketTestCase
             $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
-            9.99, new \DateTimeImmutable('now')
+            9.99,
+            new \DateTimeImmutable('now')
         ), $warehouse);
 
         $items = $basket->findAll($warehouse);
@@ -112,7 +116,8 @@ final class FilesystemTest extends BasketTestCase
             $productId = new ProductId($productId = 1111),
             $this->faker()->title,
             1,
-            9.99, new \DateTimeImmutable('now')
+            9.99,
+            new \DateTimeImmutable('now')
         ), $warehouse);
 
         $basket->destroy($warehouse);

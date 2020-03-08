@@ -13,7 +13,7 @@ use PantherHQ\Basket\Warehouse;
 use PantherHQ\Basket\WarehouseInterface;
 use Ramsey\Uuid\Uuid;
 
-final class Database implements WarehouseInterface
+final class Database extends DriverAbstract implements WarehouseInterface
 {
     /**
      * @var Connection
@@ -46,10 +46,7 @@ final class Database implements WarehouseInterface
 
             if (is_array($data)) {
                 $items = unserialize((string) base64_decode($data['basket_content'], true));
-                $name = $item->itemId()->id();
-                if ($item->hasAttribute() && $item->attribute()->hasPromotion()) {
-                    $name = sprintf('%s_%s', $item->itemId()->id(), $item->attribute()->promotion());
-                }
+                $name = $this->generateItemName($item);
                 $items[$name] = $item;
                 $qb->update('basket', 'b')
                     ->set('basket_content', ':basket_content')
@@ -62,10 +59,7 @@ final class Database implements WarehouseInterface
                     ])->execute();
             } else {
                 $store = [];
-                $name = $item->itemId()->id();
-                if ($item->hasAttribute() && $item->attribute()->hasPromotion()) {
-                    $name = sprintf('%s_%s', $item->itemId()->id(), $item->attribute()->promotion());
-                }
+                $name = $this->generateItemName($item);
                 $store[$name] = $item;
                 $qb->insert('basket')->values([
                     'basket_id' => ':basket_id',

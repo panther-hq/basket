@@ -10,5 +10,4 @@ interface ProductId
      * @return mixed
      */
     public function id();
-    
 }

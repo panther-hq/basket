@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PantherHQ\Basket\Item;
 
-use Shop\Application\Exception\RuntimeException;
-
 interface ItemInterface
 {
     public function itemId(): ItemId;
@@ -30,13 +28,17 @@ interface ItemInterface
 
     public function attribute(): Attribute;
 
-    public function setAttribute(?Attribute $attribute): void;
+    public function setAttribute(Attribute $attribute): void;
 
     public function hasAttribute(): bool;
 
-    public function toArray();
+    public function jsonSerialize(): array;
 
-    // Only for adding so we don't break logged in user carts
-    public function setProductId(ProductId $productId);
+    public function setProductId(ProductId $productId): void;
 
+    public function setItemId(ItemId $itemId): void;
+
+    public function setQuantity(int $quantity): void;
+
+    public function setPrice(float $price): void;
 }

@@ -6,7 +6,7 @@ namespace PantherHQ\Basket\Item;
 
 use PantherHQ\Basket\Exception\ItemException;
 
-final class Item implements ItemInterface
+final class Item implements ItemInterface, \JsonSerializable
 {
     /**
      * @var ItemId
@@ -39,7 +39,7 @@ final class Item implements ItemInterface
     private $attribute;
 
     /**
-     * @var \DateTimeImmutable|null
+     * @var \DateTimeImmutable
      */
     private $addedAt;
 
@@ -58,13 +58,11 @@ final class Item implements ItemInterface
         $this->name = $name;
         $this->quantity = $quantity;
         $this->price = $price;
-        if($addedAt !== null) {
+        if ($addedAt !== null) {
             $this->addedAt = $addedAt;
         } else {
             $this->addedAt = new \DateTimeImmutable('now');
         }
-
-
     }
 
     public function itemId(): ItemId
@@ -82,11 +80,13 @@ final class Item implements ItemInterface
         return $this->productId;
     }
 
-    public function hasProductId(): bool {
-        return null !== $this->productId;
+    public function hasProductId(): bool
+    {
+        return $this->productId !== null;
     }
 
-    public function setProductId(ProductId $productId): void {
+    public function setProductId(ProductId $productId): void
+    {
         $this->productId = $productId;
     }
 
@@ -102,6 +102,9 @@ final class Item implements ItemInterface
 
     public function setQuantity(int $quantity): void
     {
+        if ($quantity <= 0) {
+            throw new ItemException(sprintf('quantity for item with id %s can not be %s', $this->itemId()->id(), $quantity));
+        }
         $this->quantity = $quantity;
     }
 
@@ -112,6 +115,9 @@ final class Item implements ItemInterface
 
     public function setPrice(float $price): void
     {
+        if ($price <= 0) {
+            throw new ItemException(sprintf('price for item with id %s can not be %s', $this->itemId()->id(), $price));
+        }
         $this->price = $price;
     }
 
@@ -122,7 +128,7 @@ final class Item implements ItemInterface
 
     public function hasAddedAt(): bool
     {
-        return null !== $this->addedAt;
+        return $this->addedAt !== null;
     }
 
     public function addedAt(): \DateTimeImmutable
@@ -140,25 +146,26 @@ final class Item implements ItemInterface
         return $this->attribute;
     }
 
-    public function setAttribute(?Attribute $attribute): void
+    public function setAttribute(Attribute $attribute): void
     {
         $this->attribute = $attribute;
     }
 
     public function hasAttribute(): bool
     {
-        return null !== $this->attribute;
+        return $this->attribute !== null;
     }
 
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
-            'item' => $this,
             'itemId' => $this->itemId()->id(),
             'productId' => $this->productId()->id(),
             'name' => $this->name(),
-            'qty' => $this->quantity(),
+            'quantity' => $this->quantity(),
             'price' => $this->price(),
+            'addedAt' => $this->addedAt()->getTimestamp(),
+            'attribute' => $this->hasAttribute() ? $this->attribute() : null,
         ];
     }
 }

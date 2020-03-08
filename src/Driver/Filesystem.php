@@ -10,7 +10,7 @@ use PantherHQ\Basket\Item\ItemInterface;
 use PantherHQ\Basket\Warehouse;
 use PantherHQ\Basket\WarehouseInterface;
 
-final class Filesystem implements WarehouseInterface
+final class Filesystem extends DriverAbstract implements WarehouseInterface
 {
     /**
      * @var \League\Flysystem\Filesystem
@@ -24,13 +24,13 @@ final class Filesystem implements WarehouseInterface
 
     public function add(ItemInterface $item, Warehouse $warehouse): void
     {
-        $this->filesystem->put($warehouse->warehouseId().DIRECTORY_SEPARATOR.$item->itemId()->id(), serialize($item));
+        $this->filesystem->put($warehouse->warehouseId().DIRECTORY_SEPARATOR.$this->generateItemName($item), serialize($item));
     }
 
     public function remove(ItemInterface $item, Warehouse $warehouse): void
     {
-        if ($this->filesystem->has($warehouse->warehouseId().DIRECTORY_SEPARATOR.$item->itemId()->id())) {
-            $this->filesystem->delete($warehouse->warehouseId().DIRECTORY_SEPARATOR.$item->itemId()->id());
+        if ($this->filesystem->has($warehouse->warehouseId().DIRECTORY_SEPARATOR.$this->generateItemName($item))) {
+            $this->filesystem->delete($warehouse->warehouseId().DIRECTORY_SEPARATOR.$this->generateItemName($item));
         }
     }
 
